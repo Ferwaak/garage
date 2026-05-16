@@ -1,0 +1,2 @@
+-- Fichier requis par supabase/config.toml ([db.seed]).
+-- Données d’exemple : voir seed_example.sql (à décommenter et adapter après les migrations).
