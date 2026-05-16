@@ -1,6 +1,6 @@
 "use client";
 
-import { createClient } from "@/lib/supabase/client";
+import { signInWithEmailPassword } from "@/app/connexion/actions";
 import { KeyRound, LockKeyhole, Mail } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -8,28 +8,32 @@ import { useState } from "react";
 export function ConnexionForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") || "/tableau-de-bord";
+  const redirectParam = searchParams.get("redirect");
+  const redirectTo =
+    redirectParam?.startsWith("/") && !redirectParam.startsWith("//")
+      ? redirectParam
+      : "/tableau-de-bord";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [errorDetail, setErrorDetail] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setErrorDetail(null);
     setLoading(true);
-    const supabase = createClient();
-    const { error: signErr } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    });
+
+    const result = await signInWithEmailPassword({ email, password });
+
     setLoading(false);
-    if (signErr) {
-      setError(
-        "Identifiants incorrects ou compte indisponible. Vérifiez votre adresse e-mail et votre mot de passe."
-      );
+    if (!result.ok) {
+      setError(result.message);
+      setErrorDetail(result.detail ?? null);
       return;
     }
+
     router.refresh();
     router.replace(redirectTo);
   }
@@ -97,12 +101,17 @@ export function ConnexionForm() {
               </div>
             </div>
             {error && (
-              <p
+              <div
                 className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
                 role="alert"
               >
-                {error}
-              </p>
+                <p>{error}</p>
+                {errorDetail && (
+                  <p className="mt-2 break-words font-mono text-xs text-red-900/80">
+                    Détail technique : {errorDetail}
+                  </p>
+                )}
+              </div>
             )}
             <button
               type="submit"
