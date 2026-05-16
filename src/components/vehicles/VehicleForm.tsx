@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import type { VehicleFormValues } from "@/schemas/vehicle";
 import { createClient } from "@/lib/supabase/client";
+import { formatSupabaseError } from "@/lib/supabase/error";
 import { formatChf } from "@/lib/format";
 import type { Vehicle } from "@/types/database";
 import {
@@ -201,15 +202,25 @@ export function VehicleForm({
         .single();
       if (insErr) {
         setSaving(false);
-        setError("Impossible d’enregistrer le véhicule. Vérifiez les champs.");
+        console.error("[vehicles] insert failed", insErr);
+        setError(
+          formatSupabaseError(
+            "Impossible d'enregistrer le véhicule. Vérifiez les champs.",
+            insErr
+          )
+        );
         return;
       }
       try {
         await uploadSelectedPhotos(data.id);
-      } catch {
+      } catch (uploadError) {
+        console.error("[vehicle_photos] upload failed", uploadError);
         setSaving(false);
         setError(
-          "Véhicule enregistré, mais les photos n’ont pas pu être téléversées. Vous pouvez les ajouter depuis la fiche du véhicule."
+          formatSupabaseError(
+            "Véhicule enregistré, mais les photos n'ont pas pu être téléversées.",
+            uploadError instanceof Error ? uploadError : null
+          )
         );
         router.push(`/vehicules/${data.id}`);
         router.refresh();
@@ -228,7 +239,8 @@ export function VehicleForm({
       .eq("id", vehicle.id);
     setSaving(false);
     if (upErr) {
-      setError("Impossible de mettre à jour le véhicule.");
+      console.error("[vehicles] update failed", upErr);
+      setError(formatSupabaseError("Impossible de mettre à jour le véhicule.", upErr));
       return;
     }
     router.refresh();

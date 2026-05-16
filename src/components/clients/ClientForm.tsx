@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { formatSupabaseError } from "@/lib/supabase/error";
 import { Building2, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -54,7 +55,8 @@ export function ClientForm({ garageId }: { garageId: string }) {
 
     setSaving(false);
     if (insertError || !data) {
-      setError("Impossible de créer le client.");
+      console.error("[customers] insert failed", insertError);
+      setError(formatSupabaseError("Impossible de créer le client.", insertError));
       return;
     }
     router.push(`/clients/${data.id}`);

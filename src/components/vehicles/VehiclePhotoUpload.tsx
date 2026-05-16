@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { formatSupabaseError } from "@/lib/supabase/error";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -30,18 +31,25 @@ export function VehiclePhotoUpload({
           .from("vehicle-photos")
           .upload(path, file, { upsert: false });
         if (upErr) throw upErr;
-        await supabase.from("vehicle_photos").insert({
+        const { error: insertError } = await supabase.from("vehicle_photos").insert({
           garage_id: garageId,
           vehicle_id: vehicleId,
           file_path: path,
           file_url: path,
           sort_order: i,
         });
+        if (insertError) throw insertError;
       }
       router.refresh();
       setMessage("Photos ajoutées.");
-    } catch {
-      setMessage("Échec du téléversement. Réessayez.");
+    } catch (error) {
+      console.error("[vehicle_photos] upload failed", error);
+      setMessage(
+        formatSupabaseError(
+          "Échec du téléversement. Réessayez.",
+          error instanceof Error ? error : null
+        )
+      );
     } finally {
       setUploading(false);
       e.target.value = "";

@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { formatSupabaseError } from "@/lib/supabase/error";
 import type { Vehicle } from "@/types/database";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -64,7 +65,8 @@ export function SaleForm({
       .single();
     if (cErr || !cust) {
       setSaving(false);
-      setError("Impossible d’enregistrer le client.");
+      console.error("[sales] customer insert failed", cErr);
+      setError(formatSupabaseError("Impossible d'enregistrer le client.", cErr));
       return;
     }
 
@@ -90,7 +92,8 @@ export function SaleForm({
 
     if (sErr || !sale) {
       setSaving(false);
-      setError("Impossible d’enregistrer la vente.");
+      console.error("[sales] insert failed", sErr);
+      setError(formatSupabaseError("Impossible d'enregistrer la vente.", sErr));
       return;
     }
 
@@ -101,7 +104,13 @@ export function SaleForm({
 
     if (vErr) {
       setSaving(false);
-      setError("Vente enregistrée mais mise à jour du véhicule échouée.");
+      console.error("[sales] vehicle update failed", vErr);
+      setError(
+        formatSupabaseError(
+          "Vente enregistrée mais mise à jour du véhicule échouée.",
+          vErr
+        )
+      );
       return;
     }
 

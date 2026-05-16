@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { formatSupabaseError } from "@/lib/supabase/error";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -30,7 +31,7 @@ export function VehicleDocumentUpload({
         .from("vehicle-documents")
         .upload(path, file, { upsert: false });
       if (upErr) throw upErr;
-      await supabase.from("vehicle_documents").insert({
+      const { error: insertError } = await supabase.from("vehicle_documents").insert({
         garage_id: garageId,
         vehicle_id: vehicleId,
         document_name: name.trim() || file.name,
@@ -38,11 +39,18 @@ export function VehicleDocumentUpload({
         file_path: path,
         file_url: path,
       });
+      if (insertError) throw insertError;
       router.refresh();
       setName("");
       setMessage("Document ajouté.");
-    } catch {
-      setMessage("Échec du téléversement.");
+    } catch (error) {
+      console.error("[vehicle_documents] upload failed", error);
+      setMessage(
+        formatSupabaseError(
+          "Échec du téléversement.",
+          error instanceof Error ? error : null
+        )
+      );
     } finally {
       setUploading(false);
       e.target.value = "";

@@ -3,6 +3,7 @@
 import { SignedStorageImage } from "@/components/media/SignedStorageImage";
 import { saveGarageSettings } from "@/app/actions";
 import { createClient } from "@/lib/supabase/client";
+import { formatSupabaseError } from "@/lib/supabase/error";
 import type { Garage } from "@/types/database";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -92,7 +93,8 @@ export function GarageSettingsForm({ garage }: { garage: Garage }) {
       .upload(path, file, { upsert: true });
     if (upErr) {
       setMsgOk(false);
-      setMsg("Échec du téléversement du logo.");
+      console.error("[garage-logos] upload failed", upErr);
+      setMsg(formatSupabaseError("Échec du téléversement du logo.", upErr));
       return;
     }
     const { error: dbErr } = await supabase
@@ -100,8 +102,9 @@ export function GarageSettingsForm({ garage }: { garage: Garage }) {
       .update({ logo_url: path })
       .eq("id", garage.id);
     if (dbErr) {
+      console.error("[garages] logo update failed", dbErr);
       setMsgOk(false);
-      setMsg("Logo téléversé mais URL non enregistrée.");
+      setMsg(formatSupabaseError("Logo téléversé mais URL non enregistrée.", dbErr));
     } else {
       setLogoPath(path);
       setMsgOk(true);
@@ -127,8 +130,9 @@ export function GarageSettingsForm({ garage }: { garage: Garage }) {
       .eq("id", garage.id);
 
     if (error) {
+      console.error("[garages] logo delete failed", error);
       setMsgOk(false);
-      setMsg("Suppression du logo impossible.");
+      setMsg(formatSupabaseError("Suppression du logo impossible.", error));
       return;
     }
 
@@ -151,8 +155,9 @@ export function GarageSettingsForm({ garage }: { garage: Garage }) {
         contentType: file.type || "image/png",
       });
     if (upErr) {
+      console.error("[garage-logos] QR upload failed", upErr);
       setMsgOk(false);
-      setMsg("Échec du téléversement du QR IBAN.");
+      setMsg(formatSupabaseError("Échec du téléversement du QR IBAN.", upErr));
       return;
     }
     setQrPreviewPath(`${ibanQrPath}?v=${Date.now()}`);
@@ -168,8 +173,9 @@ export function GarageSettingsForm({ garage }: { garage: Garage }) {
     const { error } = await supabase.storage.from("garage-logos").remove([ibanQrPath]);
 
     if (error) {
+      console.error("[garage-logos] QR delete failed", error);
       setMsgOk(false);
-      setMsg("Suppression du QR IBAN impossible.");
+      setMsg(formatSupabaseError("Suppression du QR IBAN impossible.", error));
       return;
     }
 

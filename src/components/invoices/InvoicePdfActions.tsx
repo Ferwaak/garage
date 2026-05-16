@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { formatSupabaseError } from "@/lib/supabase/error";
 import { generateInvoicePdfBlob } from "@/lib/invoice-pdf";
 import type { Customer, Garage, Invoice, InvoiceItem } from "@/types/database";
 import { Printer, ReceiptText } from "lucide-react";
@@ -85,8 +86,14 @@ export function InvoicePdfActions({
       a.click();
       URL.revokeObjectURL(url);
       setMsg("PDF généré et enregistré.");
-    } catch {
-      setMsg("Échec de la génération ou de l'enregistrement du PDF.");
+    } catch (error) {
+      console.error("[invoices] PDF save failed", error);
+      setMsg(
+        formatSupabaseError(
+          "Échec de la génération ou de l'enregistrement du PDF.",
+          error instanceof Error ? error : null
+        )
+      );
     } finally {
       setLoading(false);
     }

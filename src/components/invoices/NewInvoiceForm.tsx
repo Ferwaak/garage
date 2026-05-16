@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { formatSupabaseError } from "@/lib/supabase/error";
 import type { Customer, Garage } from "@/types/database";
 import { Plus, ReceiptText, Trash2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -64,7 +65,10 @@ export function NewInvoiceForm({
     });
     if (rErr || !num) {
       setSaving(false);
-      setError("Impossible de générer le numéro de facture.");
+      console.error("[invoices] next number failed", rErr);
+      setError(
+        formatSupabaseError("Impossible de générer le numéro de facture.", rErr)
+      );
       return;
     }
 
@@ -88,7 +92,8 @@ export function NewInvoiceForm({
 
     if (iErr || !inv) {
       setSaving(false);
-      setError("Impossible de créer la facture.");
+      console.error("[invoices] insert failed", iErr);
+      setError(formatSupabaseError("Impossible de créer la facture.", iErr));
       return;
     }
 
@@ -104,7 +109,10 @@ export function NewInvoiceForm({
     const { error: itErr } = await supabase.from("invoice_items").insert(items);
     setSaving(false);
     if (itErr) {
-      setError("Facture créée mais erreur sur les lignes.");
+      console.error("[invoice_items] insert failed", itErr);
+      setError(
+        formatSupabaseError("Facture créée mais erreur sur les lignes.", itErr)
+      );
       return;
     }
     router.push(`/factures/${inv.id}`);
