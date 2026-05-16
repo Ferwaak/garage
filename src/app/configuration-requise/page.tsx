@@ -1,13 +1,13 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
-import { hasSupabaseConfig } from "@/lib/supabase/env";
+import { hasSupabaseBrowserConfig } from "@/lib/supabase/browser-env";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function ConfigurationRequisePage() {
   const router = useRouter();
-  const missingSupabaseConfig = !hasSupabaseConfig();
+  const missingSupabaseConfig = !hasSupabaseBrowserConfig();
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
@@ -74,9 +74,10 @@ SELECT id, name FROM public.garages;`;
           <p className="mt-3 text-sm leading-relaxed text-zinc-600">
             {missingSupabaseConfig ? (
               <>
-                Render n&apos;a pas encore les variables Supabase. Ajoutez-les
-                dans les variables d&apos;environnement du Web Service, puis
-                relancez un deploy.
+                Render n&apos;a pas encore les variables Supabase publiques valides.
+                Ajoutez <code>NEXT_PUBLIC_SUPABASE_URL</code> et{" "}
+                <code>NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY</code> dans les
+                variables d&apos;environnement du Web Service, puis relancez un deploy.
               </>
             ) : (
               <>
@@ -95,7 +96,7 @@ SELECT id, name FROM public.garages;`;
             <p className="font-semibold">Variables à ajouter sur Render</p>
             <pre className="mt-3 overflow-x-auto rounded-md bg-white p-3 text-xs text-red-950">
 {`NEXT_PUBLIC_SUPABASE_URL=https://ton-projet.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=ta-cle-anon-ou-publishable`}
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=ta-cle-sb_publishable`}
             </pre>
             <p className="mt-3 text-red-900">
               Ces variables doivent être présentes avant le build Render. Après

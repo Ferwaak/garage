@@ -23,7 +23,7 @@ Variables requises :
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=...
 ```
 
 ## Supabase
@@ -56,10 +56,10 @@ Ajouter ces variables d'environnement dans Render :
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=...
 ```
 
-Ces variables doivent etre presentes pendant le build Render. L'application injecte aussi leur valeur au runtime pour eviter qu'un ancien build garde une configuration navigateur vide.
+Utilisez une cle `sb_publishable_...` ou la cle legacy `anon`, jamais une cle `sb_secret_...` ou `service_role`. Ces variables doivent etre presentes pendant le build Render. L'application injecte aussi leur valeur au runtime pour eviter qu'un ancien build garde une configuration navigateur vide.
 
 L'application demarre avec `next start -H 0.0.0.0` et utilise automatiquement le port fourni par Render via `$PORT`.
 
