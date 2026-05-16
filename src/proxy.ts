@@ -1,9 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
+import { hasSupabaseConfig, getSupabaseConfig } from "@/lib/supabase/env";
 import { type NextRequest, NextResponse } from "next/server";
 
-const PUBLIC_PATHS = ["/connexion"];
+const PUBLIC_PATHS = ["/connexion", "/configuration-requise"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (
@@ -19,9 +20,21 @@ export async function middleware(request: NextRequest) {
     request,
   });
 
+  if (!hasSupabaseConfig()) {
+    if (pathname === "/configuration-requise") {
+      return supabaseResponse;
+    }
+
+    const url = request.nextUrl.clone();
+    url.pathname = "/configuration-requise";
+    url.searchParams.set("erreur", "supabase-env");
+    return NextResponse.redirect(url);
+  }
+
+  const config = getSupabaseConfig();
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    config.url,
+    config.anonKey,
     {
       cookies: {
         getAll() {

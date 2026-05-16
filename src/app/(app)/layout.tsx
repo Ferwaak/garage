@@ -9,7 +9,7 @@ export default async function AppLayout({
 }) {
   const ctx = await getAuthContext();
   if (!ctx) {
-    /* Évite la boucle avec le middleware (connecté → /connexion → /tableau-de-bord). */
+    /* Avoids an auth redirect loop through the proxy. */
     redirect("/configuration-requise");
   }
 

@@ -1,17 +1,21 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { hasSupabaseConfig } from "@/lib/supabase/env";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function ConfigurationRequisePage() {
   const router = useRouter();
+  const missingSupabaseConfig = !hasSupabaseConfig();
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
+    if (missingSupabaseConfig) return;
+
     let cancelled = false;
     (async () => {
       const supabase = createClient();
@@ -20,10 +24,11 @@ export default function ConfigurationRequisePage() {
       setUserId(data.user.id);
       setEmail(data.user.email ?? null);
     })();
+
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [missingSupabaseConfig]);
 
   async function copyUid() {
     if (!userId) return;
@@ -33,13 +38,14 @@ export default function ConfigurationRequisePage() {
   }
 
   async function handleSignOut() {
+    if (missingSupabaseConfig) return;
     setLoading(true);
     const supabase = createClient();
     await supabase.auth.signOut();
     router.replace("/connexion");
   }
 
-  const sqlCheck = `-- À coller dans Supabase → SQL Editor → Run
+  const sqlCheck = `-- A coller dans Supabase -> SQL Editor -> Run
 SELECT EXISTS (
   SELECT 1 FROM information_schema.tables
   WHERE table_schema = 'public' AND table_name = 'garages'
@@ -50,90 +56,135 @@ SELECT * FROM public.profiles;
 SELECT id, name FROM public.garages;`;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10 bg-zinc-50">
-      <div className="w-full max-w-xl rounded-lg border border-zinc-200 bg-white p-6 md:p-8 shadow-sm space-y-6">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 px-4 py-10">
+      <div className="w-full max-w-xl space-y-6 rounded-lg border border-zinc-200 bg-white p-6 shadow-sm md:p-8">
         <div>
-          <h1 className="text-lg font-semibold text-zinc-900">Compte non configuré</h1>
-          <p className="mt-3 text-sm text-zinc-600 leading-relaxed">
-            Vous êtes connecté, mais l’application ne trouve pas de{" "}
-            <strong>garage lié à votre utilisateur</strong>. Il manque une ligne dans la
-            table <code className="text-xs bg-zinc-100 px-1 rounded">profiles</code>, ou les
-            tables n’ont pas encore été créées sur Supabase.
+          <h1 className="text-lg font-semibold text-zinc-900">
+            {missingSupabaseConfig
+              ? "Configuration Render requise"
+              : "Compte non configuré"}
+          </h1>
+          <p className="mt-3 text-sm leading-relaxed text-zinc-600">
+            {missingSupabaseConfig ? (
+              <>
+                Render n&apos;a pas encore les variables Supabase. Ajoutez-les
+                dans les variables d&apos;environnement du Web Service, puis
+                relancez un deploy.
+              </>
+            ) : (
+              <>
+                Vous êtes connecté, mais l&apos;application ne trouve pas de{" "}
+                <strong>garage lié à votre utilisateur</strong>. Il manque une
+                ligne dans la table{" "}
+                <code className="rounded bg-zinc-100 px-1 text-xs">profiles</code>
+                , ou les tables n&apos;ont pas encore été créées sur Supabase.
+              </>
+            )}
           </p>
         </div>
 
-        {userId && (
+        {missingSupabaseConfig && (
+          <div className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-950">
+            <p className="font-semibold">Variables à ajouter sur Render</p>
+            <pre className="mt-3 overflow-x-auto rounded-md bg-white p-3 text-xs text-red-950">
+{`NEXT_PUBLIC_SUPABASE_URL=https://ton-projet.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=ta-cle-anon-ou-publishable`}
+            </pre>
+            <p className="mt-3 text-red-900">
+              Ces variables doivent être présentes avant le build Render. Après
+              les avoir ajoutées, cliquez sur Manual Deploy / Deploy latest
+              commit.
+            </p>
+          </div>
+        )}
+
+        {!missingSupabaseConfig && userId && (
           <div className="rounded-md border border-amber-200 bg-amber-50/80 p-4 text-sm">
-            <p className="font-medium text-amber-950">Votre identifiant (pour le SQL)</p>
+            <p className="font-medium text-amber-950">
+              Votre identifiant pour le SQL
+            </p>
             {email && (
               <p className="mt-1 text-amber-900/80">
                 Compte : <span className="font-mono text-xs">{email}</span>
               </p>
             )}
-            <p className="mt-2 text-xs text-amber-900/90 break-all font-mono">{userId}</p>
+            <p className="mt-2 break-all font-mono text-xs text-amber-900/90">
+              {userId}
+            </p>
             <button
               type="button"
               onClick={copyUid}
-              className="mt-3 rounded-md border border-amber-300 bg-white px-3 py-2 text-xs font-medium text-amber-950 hover:bg-amber-100 min-h-[40px]"
+              className="mt-3 min-h-[40px] rounded-md border border-amber-300 bg-white px-3 py-2 text-xs font-medium text-amber-950 hover:bg-amber-100"
             >
               {copied ? "Copié dans le presse-papiers" : "Copier cet identifiant"}
             </button>
           </div>
         )}
 
-        <ol className="list-decimal list-inside space-y-3 text-sm text-zinc-700 leading-relaxed">
-          <li>
-            Dans ton projet Cursor, ouvre{" "}
-            <code className="text-xs bg-zinc-100 px-1 rounded">
-              supabase/migrations/00001_initial_schema.sql
-            </code>
-            , copie <strong>tout</strong> le SQL, colle-le dans{" "}
-            <strong>Supabase → SQL Editor</strong>, exécute-le <strong>une fois</strong> (sans
-            erreur).
-          </li>
-          <li>
-            Ouvre{" "}
-            <code className="text-xs bg-zinc-100 px-1 rounded">
-              supabase/setup_premier_compte.sql
-            </code>
-            : exécute le <strong>BLOC B</strong> pour créer un garage, note l’{" "}
-            <strong>id</strong> retourné.
-          </li>
-          <li>
-            Dans le <strong>BLOC C</strong>, décommente l’<code className="text-xs">INSERT</code>,
-            mets ton identifiant ci-dessus comme <code className="text-xs">id</code>, l’id du
-            garage comme <code className="text-xs">garage_id</code>, puis exécute ce bloc.
-          </li>
-          <li>
-            Reviens ici et clique <strong>Réessayer</strong>.
-          </li>
-        </ol>
+        {!missingSupabaseConfig && (
+          <ol className="list-inside list-decimal space-y-3 text-sm leading-relaxed text-zinc-700">
+            <li>
+              Ouvrez{" "}
+              <code className="rounded bg-zinc-100 px-1 text-xs">
+                supabase/migrations/00001_initial_schema.sql
+              </code>
+              , copiez tout le SQL, collez-le dans{" "}
+              <strong>Supabase - SQL Editor</strong>, puis exécutez-le une fois.
+            </li>
+            <li>
+              Ouvrez{" "}
+              <code className="rounded bg-zinc-100 px-1 text-xs">
+                supabase/setup_premier_compte.sql
+              </code>
+              , exécutez le <strong>BLOC B</strong> pour créer un garage, puis
+              notez l&apos;id retourné.
+            </li>
+            <li>
+              Dans le <strong>BLOC C</strong>, mettez votre identifiant comme{" "}
+              <code className="text-xs">id</code>, l&apos;id du garage comme{" "}
+              <code className="text-xs">garage_id</code>, puis exécutez ce bloc.
+            </li>
+            <li>
+              Revenez ici et cliquez <strong>Réessayer</strong>.
+            </li>
+          </ol>
+        )}
 
-        <details className="text-sm">
-          <summary className="cursor-pointer font-medium text-zinc-800">
-            Vérifier dans Supabase (SQL)
-          </summary>
-          <pre className="mt-2 overflow-x-auto rounded-md bg-zinc-900 text-zinc-100 p-3 text-xs whitespace-pre-wrap">
-            {sqlCheck}
-          </pre>
-        </details>
+        {!missingSupabaseConfig && (
+          <details className="text-sm">
+            <summary className="cursor-pointer font-medium text-zinc-800">
+              Vérifier dans Supabase
+            </summary>
+            <pre className="mt-2 overflow-x-auto whitespace-pre-wrap rounded-md bg-zinc-900 p-3 text-xs text-zinc-100">
+              {sqlCheck}
+            </pre>
+          </details>
+        )}
 
-        <div className="flex flex-col sm:flex-row gap-3 pt-2">
+        <div className="flex flex-col gap-3 pt-2 sm:flex-row">
           <button
             type="button"
-            onClick={() => router.push("/tableau-de-bord")}
-            className="rounded-md border border-zinc-300 bg-white px-4 py-3 text-sm font-medium text-zinc-800 hover:bg-zinc-50 min-h-[44px]"
+            onClick={() =>
+              router.push(
+                missingSupabaseConfig
+                  ? "/configuration-requise"
+                  : "/tableau-de-bord"
+              )
+            }
+            className="min-h-[44px] rounded-md border border-zinc-300 bg-white px-4 py-3 text-sm font-medium text-zinc-800 hover:bg-zinc-50"
           >
             Réessayer
           </button>
-          <button
-            type="button"
-            disabled={loading}
-            onClick={handleSignOut}
-            className="rounded-md bg-zinc-900 text-white px-4 py-3 text-sm font-medium min-h-[44px] hover:bg-zinc-800 disabled:opacity-50"
-          >
-            {loading ? "Déconnexion…" : "Se déconnecter"}
-          </button>
+          {!missingSupabaseConfig && (
+            <button
+              type="button"
+              disabled={loading}
+              onClick={handleSignOut}
+              className="min-h-[44px] rounded-md bg-zinc-900 px-4 py-3 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
+            >
+              {loading ? "Déconnexion..." : "Se déconnecter"}
+            </button>
+          )}
         </div>
       </div>
     </div>
