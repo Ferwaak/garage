@@ -39,6 +39,7 @@ Buckets Storage utilises :
 - `garage-logos`
 
 Les fichiers `.env*` restent ignores par Git, sauf `.env.local.example`.
+Ne forcez pas `.env.local` dans GitHub : utilisez `.env.local.example` comme modele local et les variables d'environnement Render pour la production.
 
 ## Deploiement Render
 
