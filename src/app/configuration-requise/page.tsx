@@ -51,6 +51,13 @@ SELECT EXISTS (
   WHERE table_schema = 'public' AND table_name = 'garages'
 ) AS tables_creees;
 
+SELECT table_name, privilege_type
+FROM information_schema.role_table_grants
+WHERE grantee = 'authenticated'
+  AND table_schema = 'public'
+  AND table_name IN ('customers', 'vehicles', 'invoices')
+ORDER BY table_name, privilege_type;
+
 SELECT id AS user_id, email FROM auth.users ORDER BY created_at DESC LIMIT 5;
 SELECT * FROM public.profiles;
 SELECT id, name FROM public.garages;`;
@@ -124,12 +131,12 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=ta-cle-anon-ou-publishable`}
         {!missingSupabaseConfig && (
           <ol className="list-inside list-decimal space-y-3 text-sm leading-relaxed text-zinc-700">
             <li>
-              Ouvrez{" "}
+              Ouvrez les fichiers{" "}
               <code className="rounded bg-zinc-100 px-1 text-xs">
-                supabase/migrations/00001_initial_schema.sql
+                supabase/migrations/*.sql
               </code>
-              , copiez tout le SQL, collez-le dans{" "}
-              <strong>Supabase - SQL Editor</strong>, puis exécutez-le une fois.
+              , copiez le SQL dans l&apos;ordre numérique, collez-le dans{" "}
+              <strong>Supabase - SQL Editor</strong>, puis exécutez-le.
             </li>
             <li>
               Ouvrez{" "}

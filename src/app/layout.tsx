@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { connection } from "next/server";
 import Script from "next/script";
+import { getSupabaseRuntimeConfig } from "@/lib/supabase/env";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,11 +32,19 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+function serializeForInlineScript(value: unknown) {
+  return JSON.stringify(value).replace(/</g, "\\u003c");
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  await connection();
+
+  const supabaseRuntimeConfig = getSupabaseRuntimeConfig();
+
   return (
     <html
       lang="fr"
@@ -45,6 +55,11 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-full flex flex-col bg-[var(--background)] text-zinc-900"
       >
+        <Script id="supabase-runtime-config" strategy="beforeInteractive">
+          {`window.__GARAGE_AZ_SUPABASE__=${serializeForInlineScript(
+            supabaseRuntimeConfig
+          )};`}
+        </Script>
         <Script id="strip-extension-hydration-attrs" strategy="beforeInteractive">
           {`
             (() => {

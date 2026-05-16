@@ -29,6 +29,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 ## Supabase
 
 Executer les migrations SQL dans `supabase/migrations/` sur le projet Supabase utilise par l'application.
+La migration `00003_explicit_data_api_grants.sql` est requise sur les projets Supabase recents : les policies RLS ne suffisent pas si les privileges Data API n'ont pas ete accordes au role `authenticated`.
 
 Buckets Storage utilises :
 
@@ -56,6 +57,8 @@ Ajouter ces variables d'environnement dans Render :
 NEXT_PUBLIC_SUPABASE_URL=...
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 ```
+
+Ces variables doivent etre presentes pendant le build Render. L'application injecte aussi leur valeur au runtime pour eviter qu'un ancien build garde une configuration navigateur vide.
 
 L'application demarre avec `next start -H 0.0.0.0` et utilise automatiquement le port fourni par Render via `$PORT`.
 
