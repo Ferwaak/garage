@@ -1,0 +1,990 @@
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/factures" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head headCacheNode={{rsc:{...}, ...}}>
+                    <__next_viewport_boundary__>
+                    <MetadataWrapper>
+                      <div
+                        hidden={true}
+-                       bis_skin_checked="1"
+                      >
+                    ...
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="fr" className="geist_a715...">
+                          <body
+                            className="min-h-full flex flex-col bg-[var(--background)] text-zinc-900"
+-                           __processed_9a3260c1-f36b-4617-aed4-2dcf0847de00__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                            ...
+                              <SegmentViewNode type="layout" pagePath="(app)/layo...">
+                                <SegmentTrieNode>
+                                <script>
+                                <script>
+                                <script>
+                                <script>
+                                <script>
+                                <script>
+                                <AppLayout>
+                                  <AppShell garageName="Mon garage">
+                                    <div
+                                      className="min-h-screen bg-[var(--background)] text-neutral-950 md:grid md:grid-..."
+-                                     bis_skin_checked="1"
+                                    >
+                                      <header>
+                                      <aside className="fixed inse...">
+                                        <div
+                                          className="border-b border-white/10 p-5"
+-                                         bis_skin_checked="1"
+                                        >
+                                        <nav>
+                                        <div
+                                          className="border-t border-white/10 p-3"
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="mb-3 rounded-xl border border-white/10 bg-white/[0.045] p-3"
+-                                           bis_skin_checked="1"
+                                          >
+                                          ...
+                                      ...
+                                        <SegmentViewNode type="page" pagePath="(app)/fact...">
+                                          <SegmentTrieNode>
+                                          <FacturesPage>
+                                            <div
+                                              className="app-page"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-bet..."
+-                                               bis_skin_checked="1"
+                                              >
+                                                <div
+-                                                 bis_skin_checked="1"
+                                                >
+                                                ...
+                                              <form className="flex flex-..." action="/factures" method="get">
+                                                <input>
+                                                <div
+                                                  className="relative flex-1"
+-                                                 bis_skin_checked="1"
+                                                >
+                                                ...
+                                              <div
+                                                className="flex flex-wrap gap-2"
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="app-panel"
+-                                               bis_skin_checked="1"
+                                              >
+                                                <table>
+                                                <ul className="divide-y d...">
+                                                  <li className="px-4 py-4">
+                                                    <div
+                                                      className="flex items-start justify-between gap-3"
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <div
+-                                                       bis_skin_checked="1"
+                                                      >
+                                                      ...
+                                                    ...
+                                                  <li className="px-4 py-4">
+                                                    <div
+                                                      className="flex items-start justify-between gap-3"
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <div
+-                                                       bis_skin_checked="1"
+                                                      >
+                                                      ...
+                                                    ...
+                                                  <li className="px-4 py-4">
+                                                    <div
+                                                      className="flex items-start justify-between gap-3"
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <div
+-                                                       bis_skin_checked="1"
+                                                      >
+                                                      ...
+                                                    ...
+                                                  <li className="px-4 py-4">
+                                                    <div
+                                                      className="flex items-start justify-between gap-3"
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <div
+-                                                       bis_skin_checked="1"
+                                                      >
+                                                      ...
+                                                    ...
+                                        ...
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/factures/..." notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="fr" className="geist_a715...">
+                          <body
+                            className="min-h-full flex flex-col bg-[var(--background)] text-zinc-900"
+-                           __processed_d25378af-39d5-4886-9aa8-a38749a230e0__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/clients" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="fr" className="geist_a715...">
+                          <body
+                            className="min-h-full flex flex-col bg-[var(--background)] text-zinc-900"
+-                           __processed_60448c55-9f17-45e3-8e99-263e54330da4__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/statistiques" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="fr" className="geist_a715...">
+                          <body
+                            className="min-h-full flex flex-col bg-[var(--background)] text-zinc-900"
+-                           __processed_8bd0ccd1-3af3-4fe8-a40f-ad62842be0ba__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/statistiques" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="fr" className="geist_a715...">
+                          <body
+                            className="min-h-full flex flex-col bg-[var(--background)] text-zinc-900"
+-                           __processed_2a7cc559-2212-4e7f-8b98-859e4bd7c867__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/tableau-d..." notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="fr" className="geist_a715...">
+                          <body
+                            className="min-h-full flex flex-col bg-[var(--background)] text-zinc-900"
+-                           __processed_e07203fb-173f-4abe-9842-8a0e607f0c12__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/tableau-d..." notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="fr" className="geist_a715...">
+                          <body
+                            className="min-h-full flex flex-col bg-[var(--background)] text-zinc-900"
+-                           __processed_285c7945-a343-4e85-9f14-40873bf4e389__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/tableau-d..." notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="fr" className="geist_a715...">
+                          <body
+                            className="min-h-full flex flex-col bg-[var(--background)] text-zinc-900"
+-                           __processed_af008e25-973a-4af0-9422-2adbe75fc329__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/tableau-d..." notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="fr" className="geist_a715...">
+                          <body
+                            className="min-h-full flex flex-col bg-[var(--background)] text-zinc-900"
+-                           __processed_d1b4cabe-d27b-4bab-abb0-134ae9410a05__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/tableau-d..." notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="fr" className="geist_a715...">
+                          <body
+                            className="min-h-full flex flex-col bg-[var(--background)] text-zinc-900"
+-                           __processed_f48bd3e0-731e-492b-b113-b3ff4c9a37a7__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/recherche" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="fr" className="geist_a715...">
+                          <body
+                            className="min-h-full flex flex-col bg-[var(--background)] text-zinc-900"
+-                           __processed_2c1544f3-6b9f-4a00-b0da-8bf0929f1824__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/recherche" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="fr" className="geist_a715...">
+                          <body
+                            className="min-h-full flex flex-col bg-[var(--background)] text-zinc-900"
+-                           __processed_78b0e50a-6589-4197-9b73-92f7597bfbd3__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/recherche" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="fr" className="geist_a715...">
+                          <body
+                            className="min-h-full flex flex-col bg-[var(--background)] text-zinc-900"
+-                           __processed_692d04d8-0c78-49ba-a3c1-c3a6cf9ec169__="true"
+-                           bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWll..."
+                          >
+                  ...
+ 
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/tableau-d..." notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head headCacheNode={{rsc:{...}, ...}}>
+                    <__next_viewport_boundary__>
+                    <MetadataWrapper>
+                      <div
+                        hidden={true}
+-                       bis_skin_checked="1"
+                      >
+                    ...
+                  ...
+                    <RedirectErrorBoundary router={{...}}>
+                      <InnerLayoutRouter url="/tableau-d..." tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} ...>
+                        <SegmentViewNode type="layout" pagePath="(app)/layo...">
+                          <SegmentTrieNode>
+                          <script>
+                          <script>
+                          <script>
+                          <script>
+                          <script>
+                          <script>
+                          <AppLayout>
+                            <AppShell garageName="AZ Auto Sàrl">
+                              <div
+                                className="min-h-screen bg-[var(--background)] text-neutral-950 md:grid md:grid-cols-[..."
+-                               bis_skin_checked="1"
+                              >
+                                <header>
+                                <aside className="fixed inse...">
+                                  <div
+                                    className="border-b border-white/10 p-5"
+-                                   bis_skin_checked="1"
+                                  >
+                                  <nav>
+                                  <div
+                                    className="border-t border-white/10 p-3"
+-                                   bis_skin_checked="1"
+                                  >
+                                ...
+                                  <SegmentViewNode type="page" pagePath="(app)/tabl...">
+                                    <SegmentTrieNode>
+                                    <TableauDeBordPage>
+                                      <div
+                                        className="app-page"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="app-panel-pad relative overflow-hidden"
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="absolute right-0 top-0 h-32 w-56 bg-[radial-gradient(circle,rgb..."
+-                                           bis_skin_checked="1"
+                                          >
+                                          <div
+                                            className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justif..."
+-                                           bis_skin_checked="1"
+                                          >
+                                            <div
+-                                             bis_skin_checked="1"
+                                            >
+                                            <div
+                                              className="flex flex-col gap-2 sm:flex-row"
+-                                             bis_skin_checked="1"
+                                            >
+                                        <section className="grid grid-...">
+                                          <MetricCard>
+                                            <div
+                                              className="app-stat"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="flex items-start justify-between gap-3"
+-                                               bis_skin_checked="1"
+                                              >
+                                                <div
+-                                                 bis_skin_checked="1"
+                                                >
+                                                ...
+                                          <MetricCard>
+                                            <div
+                                              className="app-stat"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="flex items-start justify-between gap-3"
+-                                               bis_skin_checked="1"
+                                              >
+                                                <div
+-                                                 bis_skin_checked="1"
+                                                >
+                                                ...
+                                          <MetricCard>
+                                            <div
+                                              className="app-stat"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="flex items-start justify-between gap-3"
+-                                               bis_skin_checked="1"
+                                              >
+                                                <div
+-                                                 bis_skin_checked="1"
+                                                >
+                                                ...
+                                          <MetricCard>
+                                            <div
+                                              className="app-stat"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="flex items-start justify-between gap-3"
+-                                               bis_skin_checked="1"
+                                              >
+                                                <div
+-                                                 bis_skin_checked="1"
+                                                >
+                                                ...
+                                        <section className="grid grid-...">
+                                          <div
+                                            className="app-panel-pad"
+-                                           bis_skin_checked="1"
+                                          >
+                                          <div
+                                            className="app-panel-pad"
+-                                           bis_skin_checked="1"
+                                          >
+                                          <div
+                                            className="app-panel-pad"
+-                                           bis_skin_checked="1"
+                                          >
+                                        <div
+                                          className="grid grid-cols-1 gap-5 xl:grid-cols-3"
+-                                         bis_skin_checked="1"
+                                        >
+                                          <ActivityPanel>
+                                            <section className="app-panel">
+                                              <div
+                                                className="app-section-title"
+-                                               bis_skin_checked="1"
+                                              >
+                                              <ul className="divide-y d...">
+                                                <li className="px-4 py-3">
+                                                  <div
+                                                    className="flex items-start justify-between gap-3"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                    <div
+                                                      className="min-w-0"
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                    ...
+                                          <ActivityPanel>
+                                            <section className="app-panel">
+                                              <div
+                                                className="app-section-title"
+-                                               bis_skin_checked="1"
+                                              >
+                                              ...
+                                          <ActivityPanel>
+                                            <section className="app-panel">
+                                              <div
+                                                className="app-section-title"
+-                                               bis_skin_checked="1"
+                                              >
+                                              <ul className="divide-y d...">
+                                                <li className="px-4 py-3">
+                                                  <div
+                                                    className="flex items-start justify-between gap-3"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                    <div
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                    ...
+                                                <li className="px-4 py-3">
+                                                  <div
+                                                    className="flex items-start justify-between gap-3"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                    <div
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                    ...
+                                                <li className="px-4 py-3">
+                                                  <div
+                                                    className="flex items-start justify-between gap-3"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                    <div
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                    ...
+                                                <li className="px-4 py-3">
+                                                  <div
+                                                    className="flex items-start justify-between gap-3"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                    <div
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                    ...
+                                                <li className="px-4 py-3">
+                                                  <div
+                                                    className="flex items-start justify-between gap-3"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                    <div
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                    ...
+                                  ...
+                      ...
+                  ...
+ 
+⨯ ./src/app/connexion/page.tsx:2:1
+Module not found: Can't resolve './connexion-form'
+  [90m1 |[0m [36mimport[0m { [33mSuspense[0m } [36mfrom[0m [32m"react"[0m;
+[31m[1m>[0m [90m2 |[0m [36mimport[0m { [33mConnexionForm[0m } [36mfrom[0m [32m"./connexion-form"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m3 |[0m
+  [90m4 |[0m [36mexport[0m [36mdefault[0m [36mfunction[0m [33mConnexionPage[0m() {
+  [90m5 |[0m   [36mreturn[0m (
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/app/connexion/page.tsx:2:1
+Module not found: Can't resolve './connexion-form'
+  [90m1 |[0m [36mimport[0m { [33mSuspense[0m } [36mfrom[0m [32m"react"[0m;
+[31m[1m>[0m [90m2 |[0m [36mimport[0m { [33mConnexionForm[0m } [36mfrom[0m [32m"./connexion-form"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m3 |[0m
+  [90m4 |[0m [36mexport[0m [36mdefault[0m [36mfunction[0m [33mConnexionPage[0m() {
+  [90m5 |[0m   [36mreturn[0m (
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/app/connexion/page.tsx:2:1
+Module not found: Can't resolve './connexion-form'
+  [90m1 |[0m [36mimport[0m { [33mSuspense[0m } [36mfrom[0m [32m"react"[0m;
+[31m[1m>[0m [90m2 |[0m [36mimport[0m { [33mConnexionForm[0m } [36mfrom[0m [32m"./connexion-form"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m3 |[0m
+  [90m4 |[0m [36mexport[0m [36mdefault[0m [36mfunction[0m [33mConnexionPage[0m() {
+  [90m5 |[0m   [36mreturn[0m (
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/app/connexion/page.tsx:2:1
+Module not found: Can't resolve './connexion-form'
+  [90m1 |[0m [36mimport[0m { [33mSuspense[0m } [36mfrom[0m [32m"react"[0m;
+[31m[1m>[0m [90m2 |[0m [36mimport[0m { [33mConnexionForm[0m } [36mfrom[0m [32m"./connexion-form"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m3 |[0m
+  [90m4 |[0m [36mexport[0m [36mdefault[0m [36mfunction[0m [33mConnexionPage[0m() {
+  [90m5 |[0m   [36mreturn[0m (
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[browser] ./src/app/connexion/page.tsx:2:1
+Module not found: Can't resolve './connexion-form'
+  1 | import { Suspense } from "react";
+> 2 | import { ConnexionForm } from "./connexion-form";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function ConnexionPage() {
+  5 |   return (
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./src/app/connexion/page.tsx:2:1
+Module not found: Can't resolve './connexion-form'
+  1 | import { Suspense } from "react";
+> 2 | import { ConnexionForm } from "./connexion-form";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function ConnexionPage() {
+  5 |   return (
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./src/app/connexion/page.tsx:2:1
+Module not found: Can't resolve './connexion-form'
+  1 | import { Suspense } from "react";
+> 2 | import { ConnexionForm } from "./connexion-form";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function ConnexionPage() {
+  5 |   return (
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./src/app/connexion/page.tsx:2:1
+Module not found: Can't resolve './connexion-form'
+  1 | import { Suspense } from "react";
+> 2 | import { ConnexionForm } from "./connexion-form";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function ConnexionPage() {
+  5 |   return (
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./src/app/connexion/page.tsx:2:1
+Module not found: Can't resolve './connexion-form'
+  1 | import { Suspense } from "react";
+> 2 | import { ConnexionForm } from "./connexion-form";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function ConnexionPage() {
+  5 |   return (
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./src/app/connexion/page.tsx:2:1
+Module not found: Can't resolve './connexion-form'
+  1 | import { Suspense } from "react";
+> 2 | import { ConnexionForm } from "./connexion-form";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function ConnexionPage() {
+  5 |   return (
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] Uncaught Error: ./src/app/connexion/page.tsx:2:1
+Module not found: Can't resolve './connexion-form'
+  1 | import { Suspense } from "react";
+> 2 | import { ConnexionForm } from "./connexion-form";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function ConnexionPage() {
+  5 |   return (
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (Error: ./src/app/connexion/page.tsx:2:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (Error: (./src/app/connexion/page.tsx:2:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+[browser] ./src/app/connexion/page.tsx:2:1
+Module not found: Can't resolve './connexion-form'
+  1 | import { Suspense } from "react";
+> 2 | import { ConnexionForm } from "./connexion-form";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function ConnexionPage() {
+  5 |   return (
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./src/app/connexion/page.tsx:2:1
+Module not found: Can't resolve './connexion-form'
+  1 | import { Suspense } from "react";
+> 2 | import { ConnexionForm } from "./connexion-form";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export default function ConnexionPage() {
+  5 |   return (
+
+https://nextjs.org/docs/messages/module-not-found 
+Error: Both middleware file "./src\middleware.ts" and proxy file "./src\proxy.ts" are detected. Please use "./src\proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+    at ignore-listed frames
+⨯ unhandledRejection: Error: Both middleware file "./src\middleware.ts" and proxy file "./src\proxy.ts" are detected. Please use "./src\proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+    at ignore-listed frames
+⨯ unhandledRejection:  Error: Both middleware file "./src\middleware.ts" and proxy file "./src\proxy.ts" are detected. Please use "./src\proxy.ts" only. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+    at ignore-listed frames
+SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
