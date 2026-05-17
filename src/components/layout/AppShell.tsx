@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { AutoManagerLogo } from "@/components/brand/AutoManagerLogo";
 import { SignedStorageImage } from "@/components/media/SignedStorageImage";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import {
   CarFront,
-  Gauge,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -38,7 +38,6 @@ function BrandMark({
   size: "sm" | "lg";
 }) {
   const frameClass = size === "lg" ? "h-12 w-12" : "h-10 w-10";
-  const iconClass = size === "lg" ? "h-6 w-6" : "h-5 w-5";
 
   if (logoUrl) {
     return (
@@ -68,16 +67,7 @@ function BrandMark({
     );
   }
 
-  return (
-    <span
-      className={cn(
-        "flex shrink-0 items-center justify-center rounded-xl bg-neutral-800 text-white shadow-sm",
-        frameClass
-      )}
-    >
-      <Gauge className={iconClass} />
-    </span>
-  );
+  return <AutoManagerLogo className={frameClass} />;
 }
 
 export function AppShell({

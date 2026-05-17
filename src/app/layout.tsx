@@ -16,13 +16,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Logiciel",
+  title: "AutoManager",
   description: "Gestion de garage automobile",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/icon",
+    apple: "/apple-icon",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Logiciel",
+    title: "AutoManager",
   },
 };
 

@@ -1,7 +1,8 @@
 "use client";
 
 import { signInWithEmailPassword } from "@/app/connexion/actions";
-import { KeyRound, LockKeyhole, Mail } from "lucide-react";
+import { AutoManagerLogo } from "@/components/brand/AutoManagerLogo";
+import { LockKeyhole, Mail } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
@@ -39,22 +40,20 @@ export function ConnexionForm() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#eef0ed] px-4 py-10">
+    <main className="flex min-h-screen items-center justify-center bg-[#071210] px-4 py-10">
       <div className="w-full max-w-[430px]">
         <div className="mb-7 text-center">
-          <p className="text-3xl font-semibold tracking-tight text-neutral-950">
-            Logiciel
+          <p className="text-3xl font-semibold tracking-tight text-white">
+            AutoManager
           </p>
-          <p className="mt-2 text-sm font-medium text-neutral-500">
+          <p className="mt-2 text-sm font-medium text-[#9fc5bd]">
             Développé par Xhem Zeqiri
           </p>
         </div>
 
-        <div className="rounded-xl border border-neutral-200 bg-white p-5 shadow-[0_24px_70px_rgba(20,28,38,0.12)] sm:p-6">
+        <div className="rounded-xl border border-[#0b564a]/25 bg-white p-5 shadow-[0_24px_70px_rgba(11,86,74,0.26)] sm:p-6">
           <div className="mb-7">
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-neutral-950 text-white">
-              <KeyRound className="h-5 w-5" />
-            </div>
+            <AutoManagerLogo className="mb-4 h-12 w-12" />
             <h1 className="text-2xl font-semibold tracking-tight text-zinc-950">
               Connexion
             </h1>
@@ -116,7 +115,7 @@ export function ConnexionForm() {
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex min-h-[48px] w-full items-center justify-center rounded-lg bg-neutral-950 px-4 py-2.5 text-base font-semibold text-white transition-colors hover:bg-neutral-800 disabled:pointer-events-none disabled:opacity-50"
+              className="inline-flex min-h-[48px] w-full items-center justify-center rounded-lg bg-[#0b564a] px-4 py-2.5 text-base font-semibold text-white transition-colors hover:bg-[#09483f] disabled:pointer-events-none disabled:opacity-50"
             >
               {loading ? "Connexion..." : "Se connecter"}
             </button>

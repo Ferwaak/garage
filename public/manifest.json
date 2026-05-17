@@ -1,11 +1,11 @@
 {
-  "name": "Logiciel",
-  "short_name": "Logiciel",
+  "name": "AutoManager",
+  "short_name": "AutoManager",
   "description": "Gestion administrative garage",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#071210",
+  "theme_color": "#0b564a",
   "lang": "fr",
   "icons": [
     {

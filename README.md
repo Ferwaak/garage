@@ -1,4 +1,4 @@
-# Logiciel Garage
+# AutoManager
 
 Application web Next.js 16 pour la gestion d'un garage automobile : vehicules, ventes, clients, factures PDF, QR IBAN, statistiques et parametres du garage.
 
