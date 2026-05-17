@@ -38,6 +38,11 @@ function toRequiredNumber(value: NumericInput) {
   return toNullableNumber(value) ?? 0;
 }
 
+function priceDefault(value: number | string | null | undefined) {
+  if (value === null || value === undefined || Number(value) === 0) return "";
+  return Number(value);
+}
+
 export function VehicleForm({
   garageId,
   mode,
@@ -60,7 +65,6 @@ export function VehicleForm({
           model: vehicle.model ?? "",
           version: vehicle.version ?? "",
           year: vehicle.year ?? undefined,
-          first_registration_date: vehicle.first_registration_date ?? "",
           mileage: vehicle.mileage ?? undefined,
           fuel_type: vehicle.fuel_type ?? "",
           transmission: vehicle.transmission ?? "",
@@ -71,27 +75,26 @@ export function VehicleForm({
           vin: vehicle.vin ?? "",
           matricule: vehicle.matricule ?? "",
           purchase_date: vehicle.purchase_date ?? "",
-          purchase_price: Number(vehicle.purchase_price ?? 0),
+          purchase_price: priceDefault(vehicle.purchase_price),
           seller_name: vehicle.seller_name ?? "",
           seller_contact: vehicle.seller_contact ?? "",
-          additional_fees: Number(vehicle.additional_fees ?? 0),
-          repair_fees: Number(vehicle.repair_fees ?? 0),
-          preparation_fees: Number(vehicle.preparation_fees ?? 0),
-          administrative_fees: Number(vehicle.administrative_fees ?? 0),
-          desired_sale_price: vehicle.desired_sale_price != null
-            ? Number(vehicle.desired_sale_price)
-            : undefined,
+          additional_fees: priceDefault(vehicle.additional_fees),
+          repair_fees: priceDefault(vehicle.repair_fees),
+          preparation_fees: priceDefault(vehicle.preparation_fees),
+          administrative_fees: priceDefault(vehicle.administrative_fees),
+          desired_sale_price: priceDefault(vehicle.desired_sale_price),
           description: vehicle.description ?? "",
           internal_notes: vehicle.internal_notes ?? "",
           status: vehicle.status,
         }
       : {
           name: "",
-          purchase_price: 0,
-          additional_fees: 0,
-          repair_fees: 0,
-          preparation_fees: 0,
-          administrative_fees: 0,
+          purchase_price: "",
+          additional_fees: "",
+          repair_fees: "",
+          preparation_fees: "",
+          administrative_fees: "",
+          desired_sale_price: "",
         },
   });
 
@@ -164,7 +167,6 @@ export function VehicleForm({
       model: values.model || null,
       version: values.version || null,
       year: toNullableNumber(values.year),
-      first_registration_date: values.first_registration_date || null,
       mileage: toNullableNumber(values.mileage),
       fuel_type: values.fuel_type || null,
       transmission: values.transmission || null,
@@ -284,10 +286,6 @@ export function VehicleForm({
           <div>
             <label className={labelClass}>Année</label>
             <input type="number" {...register("year")} className={fieldClass} />
-          </div>
-          <div>
-            <label className={labelClass}>1ère mise en circulation</label>
-            <input type="date" {...register("first_registration_date")} className={fieldClass} />
           </div>
           <div>
             <label className={labelClass}>Kilométrage</label>

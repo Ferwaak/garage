@@ -47,10 +47,17 @@ body {
 
 html {
   background: var(--background);
+  max-width: 100%;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
 }
 
 body {
   min-width: 320px;
+  max-width: 100%;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+  touch-action: manipulation;
 }
 
 button,

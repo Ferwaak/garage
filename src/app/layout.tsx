@@ -30,6 +30,8 @@ export const viewport: Viewport = {
   themeColor: "#094d42",
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 function serializeForInlineScript(value: unknown) {
@@ -59,6 +61,31 @@ export default async function RootLayout({
           {`window.__GARAGE_AZ_SUPABASE__=${serializeForInlineScript(
             supabaseRuntimeConfig
           )};`}
+        </Script>
+        <Script id="lock-viewport-gestures" strategy="beforeInteractive">
+          {`
+            (() => {
+              const prevent = (event) => event.preventDefault();
+              document.addEventListener("gesturestart", prevent, { passive: false });
+              document.addEventListener("gesturechange", prevent, { passive: false });
+              document.addEventListener("gestureend", prevent, { passive: false });
+              document.addEventListener(
+                "wheel",
+                (event) => {
+                  if (event.ctrlKey) event.preventDefault();
+                },
+                { passive: false }
+              );
+              document.addEventListener("keydown", (event) => {
+                if (
+                  (event.ctrlKey || event.metaKey) &&
+                  ["+", "-", "=", "0"].includes(event.key)
+                ) {
+                  event.preventDefault();
+                }
+              });
+            })();
+          `}
         </Script>
         <Script id="strip-extension-hydration-attrs" strategy="beforeInteractive">
           {`

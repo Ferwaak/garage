@@ -101,7 +101,7 @@ export function AppShell({
   }
 
   return (
-    <div className="min-h-screen bg-[var(--background)] text-neutral-950 md:grid md:grid-cols-[292px_minmax(0,1fr)]">
+    <div className="min-h-screen max-w-full overflow-x-hidden bg-[var(--background)] text-neutral-950 md:grid md:grid-cols-[292px_minmax(0,1fr)]">
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-neutral-200/80 bg-white/92 px-4 py-3 backdrop-blur md:hidden">
         <Link
           href="/tableau-de-bord"
@@ -206,7 +206,7 @@ export function AppShell({
         />
       )}
 
-      <main className="min-w-0 bg-[radial-gradient(circle_at_top_right,rgba(14,111,92,0.10),transparent_30%),linear-gradient(180deg,#f8f9f6_0%,#f4f5f2_260px)] px-4 py-5 md:px-8 md:py-8 xl:px-10">
+      <main className="min-w-0 max-w-full overflow-x-hidden bg-[radial-gradient(circle_at_top_right,rgba(14,111,92,0.10),transparent_30%),linear-gradient(180deg,#f8f9f6_0%,#f4f5f2_260px)] px-4 py-5 md:px-8 md:py-8 xl:px-10">
         {children}
       </main>
     </div>

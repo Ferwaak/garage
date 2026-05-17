@@ -7,7 +7,7 @@ import { Plus, ReceiptText, Trash2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 
-type Line = { description: string; quantity: number; unit_price: number };
+type Line = { description: string; quantity: number; unit_price: string };
 type PriceMode = "ht" | "ttc";
 
 function roundCurrency(value: number) {
@@ -27,12 +27,12 @@ export function NewInvoiceForm({
 
   const [customerId, setCustomerId] = useState(preClient || "");
   const [lines, setLines] = useState<Line[]>([
-    { description: "", quantity: 1, unit_price: 0 },
+    { description: "", quantity: 1, unit_price: "" },
   ]);
   const [priceMode, setPriceMode] = useState<PriceMode>("ht");
   const [vatRate, setVatRate] = useState(Number(garage.default_vat_rate ?? 8.1));
   const [dueDate, setDueDate] = useState("");
-  const [notes, setNotes] = useState(garage.default_invoice_note || "");
+  const [notes, setNotes] = useState("");
   const [paymentTerms, setPaymentTerms] = useState(
     garage.default_payment_terms || ""
   );
@@ -277,7 +277,7 @@ export function NewInvoiceForm({
                 step="0.01"
                 value={line.unit_price}
                 onChange={(e) =>
-                  updateLine(i, { unit_price: Number(e.target.value) })
+                  updateLine(i, { unit_price: e.target.value })
                 }
                 className={field}
               />
@@ -300,7 +300,7 @@ export function NewInvoiceForm({
           type="button"
           className="app-button-secondary gap-2"
           onClick={() =>
-            setLines((p) => [...p, { description: "", quantity: 1, unit_price: 0 }])
+            setLines((p) => [...p, { description: "", quantity: 1, unit_price: "" }])
           }
         >
           <Plus className="h-4 w-4" />

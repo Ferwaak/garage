@@ -242,6 +242,29 @@ function drawLabelValue(
   doc.text(pdfText(value || "-"), x + 1.5, y + 12);
 }
 
+function drawTextBlock(
+  doc: jsPDF,
+  label: string,
+  value: string,
+  x: number,
+  y: number,
+  width: number,
+  maxLines = 3
+) {
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8);
+  doc.setTextColor(78, 82, 88);
+  doc.text(pdfText(label), x, y);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(20, 20, 20);
+  const lines = doc.splitTextToSize(pdfText(value), width).slice(0, maxLines);
+  doc.text(lines, x, y + 5);
+
+  return y + 7 + lines.length * 4;
+}
+
 function drawPaymentSlip(
   doc: jsPDF,
   garage: Garage,
@@ -337,6 +360,7 @@ function drawPaymentSlip(
 export function generateInvoicePdfBlob(data: InvoicePdfInput): Blob {
   const { garage, invoice, customer, items, logoDataUrl } = data;
   const currency = garage.currency || "CHF";
+  const paymentTerms = invoice.payment_terms || garage.default_payment_terms || "";
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const margin = 18;
 
@@ -388,11 +412,7 @@ export function generateInvoicePdfBlob(data: InvoicePdfInput): Blob {
   doc.setTextColor(20, 20, 20);
   doc.rect(margin, y + 6, 168, 9);
   doc.text(
-    pdfText(
-      invoice.notes ||
-        invoice.payment_terms ||
-        `Facture de vente de vehicule ${invoice.invoice_number}`
-    ),
+    pdfText(`Facture de vente de vehicule ${invoice.invoice_number}`),
     margin + 1.5,
     y + 12
   );
@@ -487,23 +507,33 @@ export function generateInvoicePdfBlob(data: InvoicePdfInput): Blob {
     align: "right",
   });
 
-  if (y > 184) {
+  if (y > 158) {
     doc.addPage();
     y = 32;
   } else {
-    y = 196;
+    y = Math.max(y + 34, 164);
   }
   doc.setTextColor(20, 20, 20);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(11);
-  doc.text(
-    pdfText(
+  doc.setFontSize(9);
+  if (paymentTerms) {
+    y = drawTextBlock(doc, "Conditions de paiement", paymentTerms, margin, y, 166, 2);
+  }
+  if (invoice.notes) {
+    y = drawTextBlock(doc, "Remarques", invoice.notes, margin, y, 166, 2);
+  }
+  if (y < 194) {
+    drawTextBlock(
+      doc,
+      "Message",
       garage.default_invoice_note ||
-        "Nous vous remercions de votre confiance et vous adressons nos meilleures salutations."
-    ),
-    margin,
-    y
-  );
+        "Nous vous remercions de votre confiance et vous adressons nos meilleures salutations.",
+      margin,
+      y,
+      166,
+      1
+    );
+  }
   drawPaymentSlip(doc, garage, invoice, customer);
 
   return doc.output("blob");

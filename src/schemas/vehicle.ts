@@ -7,7 +7,6 @@ export type VehicleFormValues = {
   model?: string;
   version?: string;
   year?: number | string;
-  first_registration_date?: string | null;
   mileage?: number | string;
   fuel_type?: string;
   transmission?: string;

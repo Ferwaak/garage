@@ -7,6 +7,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { formatChf } from "@/lib/format";
 
+function priceDefault(value: number | string | null | undefined) {
+  if (value === null || value === undefined || Number(value) === 0) return "";
+  return Number(value);
+}
+
 export function SaleForm({
   garageId,
   vehicle,
@@ -159,7 +164,7 @@ export function SaleForm({
               step="0.01"
               required
               className={field}
-              defaultValue={vehicle.desired_sale_price ?? ""}
+              defaultValue={priceDefault(vehicle.desired_sale_price)}
             />
           </div>
           <div>
