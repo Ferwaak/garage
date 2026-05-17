@@ -7,59 +7,14 @@ import { formatSupabaseError } from "@/lib/supabase/error";
 import type { Garage } from "@/types/database";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-
-function GarageStoragePreview({
-  path,
-  alt,
-}: {
-  path: string;
-  alt: string;
-}) {
-  const [src, setSrc] = useState<string | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    let objectUrl: string | null = null;
-
-    (async () => {
-      const supabase = createClient();
-      const cleanPath = path.split("?")[0];
-      const { data, error } = await supabase.storage
-        .from("garage-logos")
-        .download(cleanPath);
-
-      if (cancelled || error || !data) return;
-      objectUrl = URL.createObjectURL(data);
-      setSrc(objectUrl);
-    })();
-
-    return () => {
-      cancelled = true;
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-    };
-  }, [path]);
-
-  if (!src) return null;
-
-  return (
-    <div className="h-32 w-32 overflow-hidden rounded-md border border-zinc-200">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt={alt} className="h-full w-full object-contain" />
-    </div>
-  );
-}
+import { useState } from "react";
 
 export function GarageSettingsForm({ garage }: { garage: Garage }) {
   const router = useRouter();
-  const ibanQrPath = `${garage.id}/iban-qr.png`;
   const [msg, setMsg] = useState<string | null>(null);
   const [msgOk, setMsgOk] = useState(true);
   const [saving, setSaving] = useState(false);
   const [logoPath, setLogoPath] = useState<string | null>(garage.logo_url);
-  const [qrPreviewPath, setQrPreviewPath] = useState<string | null>(
-    garage.qr_code_url ?? ibanQrPath
-  );
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -142,48 +97,6 @@ export function GarageSettingsForm({ garage }: { garage: Garage }) {
     router.refresh();
   }
 
-  async function onIbanQr(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setMsg(null);
-    setMsgOk(true);
-    const supabase = createClient();
-    const { error: upErr } = await supabase.storage
-      .from("garage-logos")
-      .upload(ibanQrPath, file, {
-        upsert: true,
-        contentType: file.type || "image/png",
-      });
-    if (upErr) {
-      console.error("[garage-logos] QR upload failed", upErr);
-      setMsgOk(false);
-      setMsg(formatSupabaseError("Échec du téléversement du QR IBAN.", upErr));
-      return;
-    }
-    setQrPreviewPath(`${ibanQrPath}?v=${Date.now()}`);
-    setMsgOk(true);
-    setMsg("QR IBAN mis à jour.");
-    e.target.value = "";
-  }
-
-  async function deleteIbanQr() {
-    setMsg(null);
-    setMsgOk(true);
-    const supabase = createClient();
-    const { error } = await supabase.storage.from("garage-logos").remove([ibanQrPath]);
-
-    if (error) {
-      console.error("[garage-logos] QR delete failed", error);
-      setMsgOk(false);
-      setMsg(formatSupabaseError("Suppression du QR IBAN impossible.", error));
-      return;
-    }
-
-    setQrPreviewPath(null);
-    setMsgOk(true);
-    setMsg("QR IBAN supprimé.");
-  }
-
   const f = "app-field min-h-[44px]";
   const l = "app-label";
 
@@ -238,38 +151,6 @@ export function GarageSettingsForm({ garage }: { garage: Garage }) {
           >
             <Trash2 className="h-4 w-4" />
             Supprimer le logo
-          </button>
-        )}
-      </div>
-
-      {qrPreviewPath?.startsWith("http") ? (
-        <div className="h-32 w-32 overflow-hidden rounded-md border border-zinc-200">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={qrPreviewPath}
-            alt="QR IBAN"
-            className="h-full w-full object-contain"
-          />
-        </div>
-      ) : (
-        qrPreviewPath && <GarageStoragePreview path={qrPreviewPath} alt="QR IBAN" />
-      )}
-      <div>
-        <label className={l}>QR code IBAN</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={onIbanQr}
-          className="text-sm"
-        />
-        {qrPreviewPath && (
-          <button
-            type="button"
-            onClick={deleteIbanQr}
-            className="mt-3 inline-flex min-h-[40px] items-center gap-2 rounded-md border border-red-200 bg-white px-3 text-sm font-semibold text-red-700 hover:bg-red-50"
-          >
-            <Trash2 className="h-4 w-4" />
-            Supprimer le QR IBAN
           </button>
         )}
       </div>

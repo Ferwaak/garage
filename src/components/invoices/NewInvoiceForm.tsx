@@ -8,6 +8,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 
 type Line = { description: string; quantity: number; unit_price: number };
+type PriceMode = "ht" | "ttc";
+
+function roundCurrency(value: number) {
+  return Math.round(value * 100) / 100;
+}
 
 export function NewInvoiceForm({
   garage,
@@ -24,6 +29,7 @@ export function NewInvoiceForm({
   const [lines, setLines] = useState<Line[]>([
     { description: "", quantity: 1, unit_price: 0 },
   ]);
+  const [priceMode, setPriceMode] = useState<PriceMode>("ht");
   const [vatRate, setVatRate] = useState(Number(garage.default_vat_rate ?? 8.1));
   const [dueDate, setDueDate] = useState("");
   const [notes, setNotes] = useState(garage.default_invoice_note || "");
@@ -34,14 +40,22 @@ export function NewInvoiceForm({
   const [saving, setSaving] = useState(false);
 
   const totals = useMemo(() => {
-    const subtotal = lines.reduce(
+    const enteredTotal = lines.reduce(
       (s, l) => s + Number(l.quantity || 0) * Number(l.unit_price || 0),
       0
     );
-    const vatAmount = Math.round(subtotal * (vatRate / 100) * 100) / 100;
-    const total = Math.round((subtotal + vatAmount) * 100) / 100;
+    const multiplier = 1 + Number(vatRate || 0) / 100;
+    const subtotal =
+      priceMode === "ttc"
+        ? roundCurrency(enteredTotal / multiplier)
+        : roundCurrency(enteredTotal);
+    const total =
+      priceMode === "ttc"
+        ? roundCurrency(enteredTotal)
+        : roundCurrency(subtotal * multiplier);
+    const vatAmount = roundCurrency(total - subtotal);
     return { subtotal, vatAmount, total };
-  }, [lines, vatRate]);
+  }, [lines, priceMode, vatRate]);
 
   function updateLine(i: number, patch: Partial<Line>) {
     setLines((prev) => prev.map((l, j) => (j === i ? { ...l, ...patch } : l)));
@@ -84,6 +98,7 @@ export function NewInvoiceForm({
         vat_rate: vatRate,
         vat_amount: totals.vatAmount,
         total: totals.total,
+        amounts_include_vat: priceMode === "ttc",
         notes: notes || null,
         payment_terms: paymentTerms || null,
       })
@@ -97,14 +112,24 @@ export function NewInvoiceForm({
       return;
     }
 
-    const items = cleanLines.map((l) => ({
-      garage_id: garage.id,
-      invoice_id: inv.id,
-      description: l.description.trim(),
-      quantity: l.quantity,
-      unit_price: l.unit_price,
-      total: Math.round(l.quantity * l.unit_price * 100) / 100,
-    }));
+    const vatMultiplier = 1 + Number(vatRate || 0) / 100;
+    const items = cleanLines.map((l) => {
+      const quantity = Number(l.quantity || 0);
+      const enteredUnitPrice = Number(l.unit_price || 0);
+      const unitPrice =
+        priceMode === "ttc"
+          ? roundCurrency(enteredUnitPrice / vatMultiplier)
+          : enteredUnitPrice;
+
+      return {
+        garage_id: garage.id,
+        invoice_id: inv.id,
+        description: l.description.trim(),
+        quantity,
+        unit_price: unitPrice,
+        total: roundCurrency(quantity * unitPrice),
+      };
+    });
 
     const { error: itErr } = await supabase.from("invoice_items").insert(items);
     setSaving(false);
@@ -173,6 +198,25 @@ export function NewInvoiceForm({
           />
         </div>
         <div className="md:col-span-2">
+          <label className={label}>Mode de saisie des prix</label>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setPriceMode("ht")}
+              className={`app-tab ${priceMode === "ht" ? "app-tab-active" : ""}`}
+            >
+              Prix hors taxe
+            </button>
+            <button
+              type="button"
+              onClick={() => setPriceMode("ttc")}
+              className={`app-tab ${priceMode === "ttc" ? "app-tab-active" : ""}`}
+            >
+              Prix taxe incluse
+            </button>
+          </div>
+        </div>
+        <div className="md:col-span-2">
           <label className={label}>Conditions de paiement</label>
           <textarea
             value={paymentTerms}
@@ -225,7 +269,9 @@ export function NewInvoiceForm({
               />
             </div>
             <div className="md:col-span-3">
-              <label className={label}>Prix unit. CHF</label>
+              <label className={label}>
+                Prix unit. {priceMode === "ttc" ? "TTC" : "HT"} CHF
+              </label>
               <input
                 type="number"
                 step="0.01"
@@ -271,6 +317,12 @@ export function NewInvoiceForm({
           </h2>
         </div>
         <div className="space-y-3 rounded-xl bg-[#f6f8f5] p-4 text-sm">
+          <div className="flex justify-between gap-3">
+            <span className="text-neutral-600">Mode</span>
+            <span className="font-semibold text-neutral-950">
+              {priceMode === "ttc" ? "Prix saisis TTC" : "Prix saisis HT"}
+            </span>
+          </div>
           <div className="flex justify-between gap-3">
             <span className="text-neutral-600">Sous-total HT</span>
             <span className="font-semibold tabular-nums text-neutral-950">

@@ -31,7 +31,6 @@ export interface Garage {
   email: string | null;
   website: string | null;
   logo_url: string | null;
-  qr_code_url?: string | null;
   iban: string | null;
   bank_name: string | null;
   bank_account_holder: string | null;
@@ -164,6 +163,7 @@ export interface Invoice {
   vat_rate: number | null;
   vat_amount: number | null;
   total: number;
+  amounts_include_vat: boolean;
   notes: string | null;
   payment_terms: string | null;
   pdf_url: string | null;

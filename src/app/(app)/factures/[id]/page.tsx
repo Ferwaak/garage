@@ -11,6 +11,25 @@ import { deleteInvoice } from "@/app/actions";
 import type { Customer, Invoice, InvoiceItem } from "@/types/database";
 import { ArrowLeft } from "lucide-react";
 
+function roundCurrency(value: number) {
+  return Math.round(value * 100) / 100;
+}
+
+function itemDisplayAmounts(invoice: Invoice, item: InvoiceItem) {
+  if (!invoice.amounts_include_vat) {
+    return {
+      unitPrice: Number(item.unit_price),
+      total: Number(item.total),
+    };
+  }
+
+  const multiplier = 1 + Number(invoice.vat_rate ?? 0) / 100;
+  return {
+    unitPrice: roundCurrency(Number(item.unit_price) * multiplier),
+    total: roundCurrency(Number(item.total) * multiplier),
+  };
+}
+
 export default async function FactureDetailPage({
   params,
 }: {
@@ -127,24 +146,33 @@ export default async function FactureDetailPage({
             <tr>
               <th>Description</th>
               <th>Qté</th>
-              <th className="text-right">Prix unit.</th>
+              <th className="text-right">
+                Prix unit. {inv.amounts_include_vat ? "TTC" : "HT"}
+              </th>
               <th className="text-right">Total</th>
             </tr>
           </thead>
           <tbody>
-            {its.map((item) => (
-              <tr key={item.id}>
-                <td>{item.description}</td>
-                <td>{item.quantity}</td>
-                <td className="text-right tabular-nums">
-                  {formatChf(item.unit_price)}
-                </td>
-                <td className="text-right tabular-nums">{formatChf(item.total)}</td>
-              </tr>
-            ))}
+            {its.map((item) => {
+              const display = itemDisplayAmounts(inv, item);
+
+              return (
+                <tr key={item.id}>
+                  <td>{item.description}</td>
+                  <td>{item.quantity}</td>
+                  <td className="text-right tabular-nums">
+                    {formatChf(display.unitPrice)}
+                  </td>
+                  <td className="text-right tabular-nums">
+                    {formatChf(display.total)}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
         <div className="ml-auto mt-5 max-w-sm space-y-2 rounded-xl bg-[#f6f8f5] p-4 text-right text-sm">
+          <p>{inv.amounts_include_vat ? "Prix saisis TTC" : "Prix saisis HT"}</p>
           <p>Sous-total HT: {formatChf(inv.subtotal)}</p>
           <p>
             TVA ({inv.vat_rate ?? 0} %): {formatChf(inv.vat_amount ?? 0)}

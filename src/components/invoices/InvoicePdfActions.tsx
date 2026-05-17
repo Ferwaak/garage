@@ -18,7 +18,6 @@ export function InvoicePdfActions({
   customer: Customer | null;
   items: InvoiceItem[];
 }) {
-  const ibanQrPath = `${garage.id}/iban-qr.png`;
   const [msg, setMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -56,17 +55,13 @@ export function InvoicePdfActions({
     setMsg(null);
     setLoading(true);
     try {
-      const [logoDataUrl, qrCodeDataUrl] = await Promise.all([
-        getGarageAssetDataUrl(garage.logo_url),
-        getGarageAssetDataUrl(garage.qr_code_url ?? ibanQrPath),
-      ]);
+      const logoDataUrl = await getGarageAssetDataUrl(garage.logo_url);
       const blob = generateInvoicePdfBlob({
         garage,
         invoice,
         customer,
         items,
         logoDataUrl,
-        qrCodeDataUrl,
       });
       const path = `${garage.id}/${invoice.id}/facture.pdf`;
       const supabase = createClient();
@@ -100,17 +95,13 @@ export function InvoicePdfActions({
   }
 
   async function printLocal() {
-    const [logoDataUrl, qrCodeDataUrl] = await Promise.all([
-      getGarageAssetDataUrl(garage.logo_url),
-      getGarageAssetDataUrl(garage.qr_code_url ?? ibanQrPath),
-    ]);
+    const logoDataUrl = await getGarageAssetDataUrl(garage.logo_url);
     const blob = generateInvoicePdfBlob({
       garage,
       invoice,
       customer,
       items,
       logoDataUrl,
-      qrCodeDataUrl,
     });
     const url = URL.createObjectURL(blob);
     const w = window.open(url, "_blank");

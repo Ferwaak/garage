@@ -9,7 +9,6 @@ export type InvoicePdfInput = {
   customer: Customer | null;
   items: InvoiceItem[];
   logoDataUrl?: string | null;
-  qrCodeDataUrl?: string | null;
 };
 
 function qrAmount(value: number | string | null | undefined) {
@@ -46,6 +45,38 @@ function pdfText(value: string | number | null | undefined) {
     .replace(/[^\x09\x0a\x0d\x20-\x7e]/g, "");
 }
 
+function qrText(value: string | number | null | undefined) {
+  return String(value ?? "")
+    .normalize("NFC")
+    .replace(/[\r\n]+/g, " ")
+    .trim();
+}
+
+function countryCode(value: string | null | undefined) {
+  const normalized = qrText(value).toLowerCase();
+  if (!normalized || normalized === "suisse" || normalized === "schweiz") {
+    return "CH";
+  }
+  if (normalized === "france") return "FR";
+  if (normalized === "italie" || normalized === "italia") return "IT";
+  if (normalized === "allemagne" || normalized === "deutschland") return "DE";
+  return normalized.length === 2 ? normalized.toUpperCase() : "CH";
+}
+
+function splitStreetAndHouseNumber(address: string | null | undefined) {
+  const value = qrText(address);
+  const match = value.match(/^(.*?)[,\s]+(\d+[a-zA-Z]?(?:[-/]\d+[a-zA-Z]?)?)$/);
+
+  if (!match) {
+    return { street: value, houseNumber: "" };
+  }
+
+  return {
+    street: match[1].trim(),
+    houseNumber: match[2].trim(),
+  };
+}
+
 function pdfLines(lines: Array<string | null | undefined>) {
   return compact(lines).map(pdfText);
 }
@@ -72,20 +103,23 @@ function qrPayload(
   invoice: Invoice,
   customer: Customer | null
 ) {
-  const creditorAddress = compact([garage.address]).join(" ");
-  const debtorAddress = compact([customer?.address]).join(" ");
+  const creditorAddress = splitStreetAndHouseNumber(garage.address);
+  const debtorAddress = splitStreetAndHouseNumber(customer?.address);
+  const creditorName =
+    garage.bank_account_holder || garage.legal_name || garage.name || "";
+
   return [
     "SPC",
     "0200",
     "1",
     garage.iban || "",
-    "K",
-    pdfText(garage.legal_name || garage.name),
-    pdfText(creditorAddress),
-    "",
+    "S",
+    qrText(creditorName),
+    qrText(creditorAddress.street),
+    qrText(creditorAddress.houseNumber),
     garage.postal_code || "",
-    pdfText(garage.city),
-    garage.country === "Suisse" ? "CH" : garage.country || "CH",
+    qrText(garage.city),
+    countryCode(garage.country),
     "",
     "",
     "",
@@ -95,16 +129,16 @@ function qrPayload(
     "",
     qrAmount(invoice.total),
     garage.currency || "CHF",
-    "K",
-    pdfText(customerName(customer)),
-    pdfText(debtorAddress),
-    "",
+    customer ? "S" : "",
+    customer ? qrText(customerName(customer)) : "",
+    customer ? qrText(debtorAddress.street) : "",
+    customer ? qrText(debtorAddress.houseNumber) : "",
     customer?.postal_code || "",
-    pdfText(customer?.city),
-    customer?.country === "Suisse" ? "CH" : customer?.country || "CH",
+    qrText(customer?.city),
+    customer ? countryCode(customer.country) : "",
     "NON",
     "",
-    pdfText(`Facture ${invoice.invoice_number}`),
+    qrText(`Facture ${invoice.invoice_number}`),
     "EPD",
     "",
   ].join("\n");
@@ -212,8 +246,7 @@ function drawPaymentSlip(
   doc: jsPDF,
   garage: Garage,
   invoice: Invoice,
-  customer: Customer | null,
-  qrCodeDataUrl?: string | null
+  customer: Customer | null
 ) {
   const pageHeight = doc.internal.pageSize.getHeight();
   const y = 205;
@@ -267,23 +300,7 @@ function drawPaymentSlip(
   doc.setFontSize(7);
   doc.text("Point de depot", 39, y + 78);
 
-  if (qrCodeDataUrl) {
-    try {
-      const size = fitImage(doc, qrCodeDataUrl, 44, 44);
-      doc.addImage(
-        qrCodeDataUrl,
-        imageFormatFromDataUrl(qrCodeDataUrl),
-        68 + (44 - size.width) / 2,
-        y + 21 + (44 - size.height) / 2,
-        size.width,
-        size.height,
-        undefined,
-        "FAST"
-      );
-    } catch {
-      doc.rect(68, y + 21, 44, 44);
-    }
-  } else if (garage.iban) {
+  if (garage.iban) {
     const qr = QRCode(0, "M");
     qr.addData(qrPayload(garage, invoice, customer));
     qr.make();
@@ -318,7 +335,7 @@ function drawPaymentSlip(
 }
 
 export function generateInvoicePdfBlob(data: InvoicePdfInput): Blob {
-  const { garage, invoice, customer, items, logoDataUrl, qrCodeDataUrl } = data;
+  const { garage, invoice, customer, items, logoDataUrl } = data;
   const currency = garage.currency || "CHF";
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const margin = 18;
@@ -384,14 +401,28 @@ export function generateInvoicePdfBlob(data: InvoicePdfInput): Blob {
   autoTable(doc, {
     startY: y,
     margin: { left: margin, right: margin },
-    head: [["Description", "Quantite", "Unite", "Prix CHF", "Total"]],
-    body: items.map((it) => [
-      pdfText(it.description),
-      formatQuantity(it.quantity),
-      "Bloc",
-      formatAmount(it.unit_price),
-      formatAmount(it.total),
-    ]),
+    head: [
+      [
+        "Description",
+        "Quantite",
+        "Unite",
+        invoice.amounts_include_vat ? "Prix TTC CHF" : "Prix HT CHF",
+        "Total",
+      ],
+    ],
+    body: items.map((it) => {
+      const multiplier = invoice.amounts_include_vat
+        ? 1 + Number(invoice.vat_rate ?? 0) / 100
+        : 1;
+
+      return [
+        pdfText(it.description),
+        formatQuantity(it.quantity),
+        "Bloc",
+        formatAmount(Number(it.unit_price) * multiplier),
+        formatAmount(Number(it.total) * multiplier),
+      ];
+    }),
     styles: {
       font: "helvetica",
       fontSize: 10,
@@ -473,7 +504,7 @@ export function generateInvoicePdfBlob(data: InvoicePdfInput): Blob {
     margin,
     y
   );
-  drawPaymentSlip(doc, garage, invoice, customer, qrCodeDataUrl);
+  drawPaymentSlip(doc, garage, invoice, customer);
 
   return doc.output("blob");
 }
