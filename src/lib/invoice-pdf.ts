@@ -185,7 +185,7 @@ function drawBrand(
 ) {
   if (logoDataUrl) {
     try {
-      const size = fitImage(doc, logoDataUrl, 34, 24);
+      const size = fitImage(doc, logoDataUrl, 30, 18);
       doc.addImage(
         logoDataUrl,
         imageFormatFromDataUrl(logoDataUrl),
@@ -205,19 +205,19 @@ function drawBrand(
 
   doc.setTextColor(10, 10, 10);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.text(pdfText(garage.legal_name || garage.name || "Garage"), x + 44, y + 9);
+  doc.setFontSize(16);
+  doc.text(pdfText(garage.legal_name || garage.name || "Garage"), x + 38, y + 7);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(12);
-  doc.text("Facture de vente de vehicule", x + 44, y + 18);
-  doc.setFontSize(9);
+  doc.setFontSize(10);
+  doc.text("Facture de vente de vehicule", x + 38, y + 15);
+  doc.setFontSize(8);
   doc.text(
     pdfLines([
       [garage.address, garage.postal_code, garage.city].filter(Boolean).join(" - "),
       [garage.email, garage.website, garage.phone].filter(Boolean).join(" - "),
     ]),
-    x + 44,
-    y + 25
+    x + 38,
+    y + 21
   );
 }
 
@@ -229,17 +229,17 @@ function drawLabelValue(
   y: number,
   w: number
 ) {
-  drawGradientHeader(doc, x, y, w, 6);
+  drawGradientHeader(doc, x, y, w, 5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(10);
-  doc.text(pdfText(label), x + 1.5, y + 4.4);
+  doc.setFontSize(8);
+  doc.text(pdfText(label), x + 1.5, y + 3.6);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
+  doc.setFontSize(9);
   doc.setTextColor(20, 20, 20);
   doc.setDrawColor(235, 235, 235);
-  doc.rect(x, y + 6, w, 9);
-  doc.text(pdfText(value || "-"), x + 1.5, y + 12);
+  doc.rect(x, y + 5, w, 8);
+  doc.text(pdfText(value || "-"), x + 1.5, y + 10.5);
 }
 
 function drawTextBlock(
@@ -272,7 +272,7 @@ function drawPaymentSlip(
   customer: Customer | null
 ) {
   const pageHeight = doc.internal.pageSize.getHeight();
-  const y = 205;
+  const y = 198;
   const currency = garage.currency || "CHF";
   const accountHolder = garage.bank_account_holder || garage.legal_name || garage.name;
   const accountLines = pdfLines([
@@ -365,11 +365,11 @@ export function generateInvoicePdfBlob(data: InvoicePdfInput): Blob {
     garage.default_invoice_note ||
     "Nous vous remercions de votre confiance et vous adressons nos meilleures salutations.";
   const doc = new jsPDF({ unit: "mm", format: "a4" });
-  const margin = 18;
+  const margin = 16;
 
-  drawBrand(doc, garage, margin, 12, logoDataUrl);
+  drawBrand(doc, garage, margin, 10, logoDataUrl);
 
-  let y = 54;
+  let y = 42;
   drawLabelValue(
     doc,
     "Facture vente vehicule",
@@ -378,8 +378,8 @@ export function generateInvoicePdfBlob(data: InvoicePdfInput): Blob {
     y,
     55
   );
-  drawLabelValue(doc, "Lieu et date", `${garage.city || ""}, le ${invoice.invoice_date}`, margin, y + 18, 55);
-  drawLabelValue(doc, "Echeance", invoice.due_date || "-", margin, y + 36, 55);
+  drawLabelValue(doc, "Lieu et date", `${garage.city || ""}, le ${invoice.invoice_date}`, margin, y + 15, 55);
+  drawLabelValue(doc, "Echeance", invoice.due_date || "-", margin, y + 30, 55);
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
@@ -388,12 +388,12 @@ export function generateInvoicePdfBlob(data: InvoicePdfInput): Blob {
     pdfText(
       `Exp. : ${garage.legal_name || garage.name} a ${compact([garage.postal_code, garage.city]).join(" ")}`
     ),
-    118,
+    116,
     y + 4
   );
-  doc.line(118, y + 5.5, 185, y + 5.5);
+  doc.line(116, y + 5.5, 188, y + 5.5);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(11);
+  doc.setFontSize(10);
   doc.text(
     pdfLines([
       customerName(customer),
@@ -401,26 +401,27 @@ export function generateInvoicePdfBlob(data: InvoicePdfInput): Blob {
       [customer?.postal_code, customer?.city].filter(Boolean).join(" "),
       customer?.country,
     ]),
-    118,
-    y + 18
+    116,
+    y + 16
   );
 
-  y += 55;
-  drawGradientHeader(doc, margin, y, 55, 6);
+  y += 47;
+  drawGradientHeader(doc, margin, y, 55, 5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(10);
-  doc.text("Concerne", margin + 1.5, y + 4.4);
+  doc.setFontSize(8);
+  doc.text("Concerne", margin + 1.5, y + 3.6);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(20, 20, 20);
-  doc.rect(margin, y + 6, 168, 9);
+  doc.setFontSize(9);
+  doc.rect(margin, y + 5, 172, 8);
   doc.text(
     pdfText(`Facture de vente de vehicule ${invoice.invoice_number}`),
     margin + 1.5,
-    y + 12
+    y + 10.5
   );
 
-  y += 23;
+  y += 18;
   autoTable(doc, {
     startY: y,
     margin: { left: margin, right: margin },
@@ -448,8 +449,8 @@ export function generateInvoicePdfBlob(data: InvoicePdfInput): Blob {
     }),
     styles: {
       font: "helvetica",
-      fontSize: 10,
-      cellPadding: { top: 2, right: 1.5, bottom: 2, left: 1.5 },
+      fontSize: 8.5,
+      cellPadding: { top: 1.1, right: 1.2, bottom: 1.1, left: 1.2 },
       lineWidth: 0,
       textColor: [15, 15, 15],
     },
@@ -457,7 +458,7 @@ export function generateInvoicePdfBlob(data: InvoicePdfInput): Blob {
       fillColor: [78, 82, 88],
       textColor: [255, 255, 255],
       fontStyle: "bold",
-      fontSize: 10,
+      fontSize: 8.5,
     },
     columnStyles: {
       0: { fontStyle: "bold" },
@@ -468,7 +469,7 @@ export function generateInvoicePdfBlob(data: InvoicePdfInput): Blob {
   });
 
   const docExt = doc as unknown as { lastAutoTable?: { finalY: number } };
-  y = (docExt.lastAutoTable?.finalY ?? y + 25) + 4;
+  y = (docExt.lastAutoTable?.finalY ?? y + 20) + 3;
 
   const totalNoVat = Number(invoice.total) - Number(invoice.vat_amount ?? 0);
   autoTable(doc, {
@@ -484,7 +485,7 @@ export function generateInvoicePdfBlob(data: InvoicePdfInput): Blob {
       ],
       ["No TVA", pdfText(garage.vat_number || "-"), ""],
     ],
-    styles: { font: "helvetica", fontSize: 10, cellPadding: 2, lineColor: [230, 230, 235], lineWidth: 0.2 },
+    styles: { font: "helvetica", fontSize: 8.5, cellPadding: 1.4, lineColor: [230, 230, 235], lineWidth: 0.2 },
     didParseCell: (hook) => {
       if (hook.row.index === 0 || hook.row.index === 2) {
         hook.cell.styles.fillColor = [78, 82, 88];
@@ -501,39 +502,30 @@ export function generateInvoicePdfBlob(data: InvoicePdfInput): Blob {
   });
 
   const totalY = y;
-  drawGradientHeader(doc, 126, totalY, 66, 8);
+  drawGradientHeader(doc, 126, totalY, 66, 7);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
+  doc.setFontSize(10);
   doc.setTextColor(255, 255, 255);
-  doc.text("Total a payer", 128, totalY + 5.5);
-  doc.text(`${formatAmount(invoice.total)} ${currency}`, 190, totalY + 5.5, {
+  doc.text("Total a payer", 128, totalY + 4.8);
+  doc.text(`${formatAmount(invoice.total)} ${currency}`, 190, totalY + 4.8, {
     align: "right",
   });
 
-  if (y > 158) {
-    doc.addPage();
-    y = 32;
-  } else {
-    y = Math.max(y + 34, 164);
-  }
-  if (y > 176) {
-    doc.addPage();
-    y = 32;
-  }
+  y = Math.min(Math.max(y + 20, 154), 178);
   doc.setTextColor(20, 20, 20);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(9);
+  doc.setFontSize(8);
   if (paymentTerms) {
-    y = drawTextBlock(doc, "Conditions de paiement", paymentTerms, margin, y, 166, 2);
+    y = drawTextBlock(doc, "Conditions de paiement", paymentTerms, margin, y, 172, 2);
   }
-  if (y < 194) {
+  if (y < 190) {
     drawTextBlock(
       doc,
       "Message",
       invoiceMessage,
       margin,
       y,
-      166,
+      172,
       1
     );
   }
