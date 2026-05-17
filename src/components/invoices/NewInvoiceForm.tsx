@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { formatSupabaseError } from "@/lib/supabase/error";
+import { formatChf } from "@/lib/format";
 import type { Customer, Garage } from "@/types/database";
 import { Plus, ReceiptText, Trash2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -32,7 +33,6 @@ export function NewInvoiceForm({
   const [priceMode, setPriceMode] = useState<PriceMode>("ht");
   const [vatRate, setVatRate] = useState(Number(garage.default_vat_rate ?? 8.1));
   const [dueDate, setDueDate] = useState("");
-  const [notes, setNotes] = useState("");
   const [paymentTerms, setPaymentTerms] = useState(
     garage.default_payment_terms || ""
   );
@@ -99,7 +99,7 @@ export function NewInvoiceForm({
         vat_amount: totals.vatAmount,
         total: totals.total,
         amounts_include_vat: priceMode === "ttc",
-        notes: notes || null,
+        notes: null,
         payment_terms: paymentTerms || null,
       })
       .select("id")
@@ -225,15 +225,6 @@ export function NewInvoiceForm({
             className={field + " min-h-[72px]"}
           />
         </div>
-        <div className="md:col-span-2">
-          <label className={label}>Remarques</label>
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            rows={2}
-            className={field + " min-h-[72px]"}
-          />
-        </div>
       </section>
 
       <section className="app-panel-pad space-y-4">
@@ -326,20 +317,20 @@ export function NewInvoiceForm({
           <div className="flex justify-between gap-3">
             <span className="text-neutral-600">Sous-total HT</span>
             <span className="font-semibold tabular-nums text-neutral-950">
-              {totals.subtotal.toFixed(2)} CHF
+              {formatChf(totals.subtotal)}
             </span>
           </div>
           <div className="flex justify-between gap-3">
             <span className="text-neutral-600">TVA</span>
             <span className="font-semibold tabular-nums text-neutral-950">
-              {totals.vatAmount.toFixed(2)} CHF
+              {formatChf(totals.vatAmount)}
             </span>
           </div>
           <div className="border-t border-neutral-200 pt-3">
             <div className="flex justify-between gap-3">
               <span className="font-semibold text-neutral-950">Total TTC</span>
               <span className="text-2xl font-semibold tabular-nums text-neutral-950">
-                {totals.total.toFixed(2)} CHF
+                {formatChf(totals.total)}
               </span>
             </div>
           </div>

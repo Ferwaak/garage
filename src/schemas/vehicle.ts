@@ -26,7 +26,6 @@ export type VehicleFormValues = {
   administrative_fees?: number | string;
   desired_sale_price?: number | string;
   description?: string;
-  internal_notes?: string;
   status?: "en stock" | "en préparation" | "réservé" | "vendu" | "archivé";
 };
 

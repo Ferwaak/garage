@@ -361,6 +361,9 @@ export function generateInvoicePdfBlob(data: InvoicePdfInput): Blob {
   const { garage, invoice, customer, items, logoDataUrl } = data;
   const currency = garage.currency || "CHF";
   const paymentTerms = invoice.payment_terms || garage.default_payment_terms || "";
+  const invoiceMessage =
+    garage.default_invoice_note ||
+    "Nous vous remercions de votre confiance et vous adressons nos meilleures salutations.";
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const margin = 18;
 
@@ -513,21 +516,21 @@ export function generateInvoicePdfBlob(data: InvoicePdfInput): Blob {
   } else {
     y = Math.max(y + 34, 164);
   }
+  if (y > 176) {
+    doc.addPage();
+    y = 32;
+  }
   doc.setTextColor(20, 20, 20);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   if (paymentTerms) {
     y = drawTextBlock(doc, "Conditions de paiement", paymentTerms, margin, y, 166, 2);
   }
-  if (invoice.notes) {
-    y = drawTextBlock(doc, "Remarques", invoice.notes, margin, y, 166, 2);
-  }
   if (y < 194) {
     drawTextBlock(
       doc,
       "Message",
-      garage.default_invoice_note ||
-        "Nous vous remercions de votre confiance et vous adressons nos meilleures salutations.",
+      invoiceMessage,
       margin,
       y,
       166,

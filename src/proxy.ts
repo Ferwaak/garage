@@ -10,6 +10,8 @@ export async function proxy(request: NextRequest) {
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||
+    pathname === "/icon" ||
+    pathname === "/apple-icon" ||
     pathname === "/manifest.json" ||
     pathname.startsWith("/icons/")
   ) {

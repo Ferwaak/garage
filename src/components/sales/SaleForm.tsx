@@ -90,7 +90,7 @@ export function SaleForm({
         payment_method: String(fd.get("payment_method") || "") || null,
         payment_status: (fd.get("payment_status") as string) || "impayé",
         warranty: String(fd.get("warranty") || "").trim() || null,
-        notes: String(fd.get("sale_notes") || "").trim() || null,
+        notes: null,
       })
       .select("id")
       .single();
@@ -188,10 +188,6 @@ export function SaleForm({
           <div className="sm:col-span-2">
             <label className={label}>Garantie</label>
             <input name="warranty" className={field} />
-          </div>
-          <div className="sm:col-span-2">
-            <label className={label}>Remarque de vente</label>
-            <textarea name="sale_notes" rows={3} className={field + " min-h-[80px]"} />
           </div>
         </div>
       </section>

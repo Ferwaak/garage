@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getAuthContext } from "@/lib/auth-context";
 import { deleteSale } from "@/app/actions";
 import { ConfirmDeleteButton } from "@/components/ui/ConfirmDeleteButton";
-import { formatChf, formatDateFr } from "@/lib/format";
+import { formatChf, formatDateFr, formatNumber } from "@/lib/format";
 import Link from "next/link";
 import { ArrowUpRight, BadgeDollarSign, CarFront } from "lucide-react";
 
@@ -120,7 +120,7 @@ export default async function VehiculesVendusPage() {
                       </td>
                       <td className="text-right tabular-nums">
                         {sale.profit_percentage != null
-                          ? `${Number(sale.profit_percentage).toFixed(1)} %`
+                          ? `${formatNumber(sale.profit_percentage, 1)} %`
                           : "-"}
                       </td>
                       <td className="text-right">

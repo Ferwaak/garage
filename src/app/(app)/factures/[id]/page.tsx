@@ -66,6 +66,7 @@ export default async function FactureDetailPage({
   const inv = invoice as Invoice;
   const its = (items ?? []) as InvoiceItem[];
   const paymentTerms = inv.payment_terms || ctx.garage.default_payment_terms;
+  const invoiceMessage = ctx.garage.default_invoice_note;
 
   return (
     <div className="app-page-narrow">
@@ -184,7 +185,7 @@ export default async function FactureDetailPage({
         </div>
       </section>
 
-      {(paymentTerms || inv.notes) && (
+      {(paymentTerms || invoiceMessage) && (
         <section className="app-panel-pad space-y-2 text-sm">
           {paymentTerms && (
             <p>
@@ -192,10 +193,10 @@ export default async function FactureDetailPage({
               {paymentTerms}
             </p>
           )}
-          {inv.notes && (
+          {invoiceMessage && (
             <p>
-              <span className="text-zinc-500">Remarques: </span>
-              {inv.notes}
+              <span className="text-zinc-500">Message: </span>
+              {invoiceMessage}
             </p>
           )}
         </section>

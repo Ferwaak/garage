@@ -84,7 +84,6 @@ export function VehicleForm({
           administrative_fees: priceDefault(vehicle.administrative_fees),
           desired_sale_price: priceDefault(vehicle.desired_sale_price),
           description: vehicle.description ?? "",
-          internal_notes: vehicle.internal_notes ?? "",
           status: vehicle.status,
         }
       : {
@@ -186,7 +185,6 @@ export function VehicleForm({
       administrative_fees: toRequiredNumber(values.administrative_fees),
       desired_sale_price: toNullableNumber(values.desired_sale_price),
       description: values.description || null,
-      internal_notes: values.internal_notes || null,
     };
 
     if (mode === "create") {
@@ -483,10 +481,6 @@ export function VehicleForm({
         <div>
           <label className={labelClass}>Description</label>
           <textarea {...register("description")} rows={4} className={fieldClass + " min-h-[100px]"} />
-        </div>
-        <div>
-          <label className={labelClass}>Remarques internes</label>
-          <textarea {...register("internal_notes")} rows={3} className={fieldClass + " min-h-[80px]"} />
         </div>
         {mode === "edit" && (
           <div>

@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getAuthContext } from "@/lib/auth-context";
-import { formatChf, formatDateFr } from "@/lib/format";
+import { formatChf, formatDateFr, formatInteger } from "@/lib/format";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import Link from "next/link";
 import type { Invoice, Vehicle } from "@/types/database";
@@ -41,7 +41,7 @@ function MetricCard({
             {label}
           </p>
           <p className="mt-2 text-2xl font-semibold tracking-tight text-neutral-950 tabular-nums">
-            {value}
+            {typeof value === "number" ? formatInteger(value) : value}
           </p>
         </div>
         <span
@@ -215,7 +215,7 @@ export default async function TableauDeBordPage() {
             Factures
           </p>
           <p className="mt-2 text-2xl font-semibold tabular-nums text-zinc-950">
-            {invoiceCount}
+            {formatInteger(invoiceCount)}
           </p>
         </div>
         <div className="app-panel-pad">
@@ -223,7 +223,7 @@ export default async function TableauDeBordPage() {
             Payées
           </p>
           <p className="mt-2 text-2xl font-semibold tabular-nums text-emerald-700">
-            {paidInvoices}
+            {formatInteger(paidInvoices)}
           </p>
         </div>
         <div className="app-panel-pad">
@@ -231,7 +231,7 @@ export default async function TableauDeBordPage() {
             Impayées / envoyées
           </p>
           <p className="mt-2 text-2xl font-semibold tabular-nums text-amber-700">
-            {unpaidInvoices}
+            {formatInteger(unpaidInvoices)}
           </p>
         </div>
       </section>

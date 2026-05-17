@@ -19,6 +19,10 @@ export function formatChf(value: number | string | null | undefined): string {
   return `${formatNumber(value)} CHF`;
 }
 
+export function formatInteger(value: number | string | null | undefined): string {
+  return formatNumber(value, 0);
+}
+
 export function formatDateFr(
   value: string | Date | null | undefined
 ): string {

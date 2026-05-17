@@ -101,7 +101,7 @@ export function AppShell({
   }
 
   return (
-    <div className="min-h-screen max-w-full overflow-x-hidden bg-[var(--background)] text-neutral-950 md:grid md:grid-cols-[292px_minmax(0,1fr)]">
+    <div className="min-h-screen max-w-full overflow-x-hidden bg-[var(--background)] text-neutral-950 md:pl-[292px]">
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-neutral-200/80 bg-white/92 px-4 py-3 backdrop-blur md:hidden">
         <Link
           href="/tableau-de-bord"
@@ -128,7 +128,7 @@ export function AppShell({
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex w-72 shrink-0 flex-col border-r border-white/10 bg-[#111713] text-white shadow-2xl md:sticky md:top-0 md:h-screen md:w-[292px] md:shadow-none",
+          "fixed inset-y-0 left-0 z-40 flex h-dvh w-72 shrink-0 flex-col border-r border-white/10 bg-[#111713] text-white shadow-2xl md:w-[292px] md:shadow-none",
           open ? "flex" : "hidden md:flex"
         )}
       >
