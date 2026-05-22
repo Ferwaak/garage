@@ -378,7 +378,18 @@ function drawPaymentSlip(
     const qr = QRCode(0, "M");
     qr.addData(paymentData.payload);
     qr.make();
-    doc.addImage(qr.createDataURL(4, 0), "PNG", 68, y + 21, 44, 44);
+    doc.setFillColor(255, 255, 255);
+    doc.rect(67, y + 20, 46, 46, "F");
+    doc.addImage(
+      qr.createDataURL(12, 4),
+      "PNG",
+      67,
+      y + 20,
+      46,
+      46,
+      undefined,
+      "NONE"
+    );
   } else {
     doc.rect(68, y + 21, 44, 44);
     doc.setFont("helvetica", "bold");
