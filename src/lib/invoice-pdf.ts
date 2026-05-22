@@ -119,8 +119,45 @@ function qrReference(invoice: Invoice) {
   return `${baseReference}${qrReferenceCheckDigit(baseReference)}`;
 }
 
-function formatQrReference(value: string | null | undefined) {
-  const reference = qrText(value).replace(/\D/g, "");
+function scorModulo(value: string) {
+  let remainder = 0;
+
+  for (const char of value.toUpperCase()) {
+    const expanded =
+      char >= "A" && char <= "Z" ? String(char.charCodeAt(0) - 55) : char;
+    for (const digit of expanded) {
+      remainder = (remainder * 10 + Number(digit)) % 97;
+    }
+  }
+
+  return remainder;
+}
+
+function scorReference(invoice: Invoice) {
+  const source = `${invoice.invoice_number}${invoice.id}`
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "");
+  const baseReference = (source || "INVOICE").slice(-21);
+  const checkDigits = String(98 - scorModulo(`${baseReference}RF00`)).padStart(
+    2,
+    "0"
+  );
+
+  return `RF${checkDigits}${baseReference}`;
+}
+
+function formatReference(
+  value: string | null | undefined,
+  referenceType: "NON" | "QRR" | "SCOR"
+) {
+  const rawReference = qrText(value);
+  if (!rawReference) return "";
+
+  if (referenceType === "SCOR") {
+    return rawReference.match(/.{1,4}/g)?.join(" ") || "";
+  }
+
+  const reference = rawReference.replace(/\D/g, "");
   if (!reference) return "";
   const head = reference.slice(0, 2);
   const tail = reference.slice(2).match(/.{1,5}/g)?.join(" ") || "";
@@ -184,12 +221,12 @@ function qrPaymentData(
   const creditorName =
     garage.bank_account_holder || garage.legal_name || garage.name || "";
   const usesQrIban = isQrIban(account);
-  const referenceType = usesQrIban ? "QRR" : "NON";
-  const reference = usesQrIban ? qrReference(invoice) : "";
+  const referenceType: "QRR" | "SCOR" = usesQrIban ? "QRR" : "SCOR";
+  const reference = usesQrIban ? qrReference(invoice) : scorReference(invoice);
   const message = qrField(`Facture ${invoice.invoice_number}`, 140);
   const currency = usesQrIban ? "CHF" : qrCurrency(garage.currency);
 
-  const payload = [
+  const payloadLines = [
     "SPC",
     "0200",
     "1",
@@ -221,16 +258,14 @@ function qrPaymentData(
     reference,
     message,
     "EPD",
-    "",
-    "",
-    "",
-  ].join("\n");
+  ];
 
   return {
     account,
     currency,
-    isValidAccount: isSupportedSwissQrAccount(account),
-    payload,
+    isQrIban: usesQrIban,
+    isValidAccount: isSupportedSwissQrAccount(account) && !usesQrIban,
+    payload: payloadLines.join("\n"),
     reference,
     referenceType,
   };
@@ -375,7 +410,9 @@ function drawPaymentSlip(
     garage.address,
     [garage.postal_code, garage.city].filter(Boolean).join(" "),
   ]);
-  const referenceDisplay = formatQrReference(paymentData.reference);
+  const referenceDisplay = paymentData.isValidAccount
+    ? formatReference(paymentData.reference, paymentData.referenceType)
+    : "";
   const payerLines = pdfLines([
     "Payable par",
     customerName(customer),
@@ -431,7 +468,17 @@ function drawPaymentSlip(
     doc.rect(68, y + 21, 44, 44);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(7);
-    doc.text("IBAN CH/LI invalide", 90, y + 44, { align: "center" });
+    doc.text(
+      paymentData.isQrIban ? "Mettre IBAN standard" : "IBAN CH/LI invalide",
+      90,
+      y + 42,
+      { align: "center" }
+    );
+    if (paymentData.isQrIban) {
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(6);
+      doc.text("Pas le QR-IBAN", 90, y + 47, { align: "center" });
+    }
   }
 
   doc.setFontSize(7);
