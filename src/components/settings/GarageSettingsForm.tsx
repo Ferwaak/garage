@@ -219,9 +219,6 @@ export function GarageSettingsForm({ garage }: { garage: Garage }) {
         <div className="md:col-span-2">
           <label className={l}>IBAN</label>
           <input name="iban" defaultValue={garage.iban ?? ""} className={f} />
-          <p className="mt-1.5 text-xs text-neutral-500">
-            Utilisez l&apos;IBAN standard CH/LI du compte, pas le QR-IBAN.
-          </p>
         </div>
         <div>
           <label className={l}>Banque</label>
