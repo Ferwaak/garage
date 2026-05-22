@@ -149,6 +149,10 @@ function qrPaymentData(
   const debtorAddress = splitStreetAndHouseNumber(customer?.address);
   const creditorName =
     garage.bank_account_holder || garage.legal_name || garage.name || "";
+  const debtorName = customer ? qrField(customerName(customer), 70) : "";
+  const debtorPostalCode = customer ? qrField(customer.postal_code, 16) : "";
+  const debtorCity = customer ? qrField(customer.city, 35) : "";
+  const hasStructuredDebtor = Boolean(debtorName && debtorPostalCode && debtorCity);
   const message = qrField(`Facture ${invoice.invoice_number}`, 140);
   const currency = qrCurrency(garage.currency);
 
@@ -173,13 +177,13 @@ function qrPaymentData(
     "",
     qrAmount(invoice.total),
     currency,
-    customer ? "S" : "",
-    customer ? qrField(customerName(customer), 70) : "",
-    customer ? qrField(debtorAddress.street, 70) : "",
-    customer ? qrField(debtorAddress.houseNumber, 16) : "",
-    customer ? qrField(customer.postal_code, 16) : "",
-    customer ? qrField(customer.city, 35) : "",
-    customer ? countryCode(customer.country) : "",
+    hasStructuredDebtor ? "S" : "",
+    hasStructuredDebtor ? debtorName : "",
+    hasStructuredDebtor ? qrField(debtorAddress.street, 70) : "",
+    hasStructuredDebtor ? qrField(debtorAddress.houseNumber, 16) : "",
+    hasStructuredDebtor ? debtorPostalCode : "",
+    hasStructuredDebtor ? debtorCity : "",
+    hasStructuredDebtor ? countryCode(customer?.country) : "",
     "NON",
     "",
     message,
