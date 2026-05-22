@@ -184,6 +184,9 @@ function qrPaymentData(
     "",
     message,
     "EPD",
+    "",
+    "",
+    "",
   ];
 
   return {
@@ -192,6 +195,34 @@ function qrPaymentData(
     isValidAccount: isSupportedSwissQrAccount(account),
     payload: payloadLines.join("\n"),
   };
+}
+
+function drawQrCode(doc: jsPDF, payload: string, x: number, y: number, size: number) {
+  const qr = QRCode(0, "M");
+  qr.addData(payload);
+  qr.make();
+
+  const quietZone = 4;
+  const moduleCount = qr.getModuleCount();
+  const moduleSize = size / (moduleCount + quietZone * 2);
+
+  doc.setFillColor(255, 255, 255);
+  doc.rect(x, y, size, size, "F");
+  doc.setFillColor(0, 0, 0);
+
+  for (let row = 0; row < moduleCount; row += 1) {
+    for (let column = 0; column < moduleCount; column += 1) {
+      if (qr.isDark(row, column)) {
+        doc.rect(
+          x + (column + quietZone) * moduleSize,
+          y + (row + quietZone) * moduleSize,
+          moduleSize + 0.02,
+          moduleSize + 0.02,
+          "F"
+        );
+      }
+    }
+  }
 }
 
 function drawGradientHeader(doc: jsPDF, x: number, y: number, w: number, h: number) {
@@ -375,21 +406,7 @@ function drawPaymentSlip(
   doc.text("Point de depot", 39, y + 78);
 
   if (paymentData.isValidAccount) {
-    const qr = QRCode(0, "M");
-    qr.addData(paymentData.payload);
-    qr.make();
-    doc.setFillColor(255, 255, 255);
-    doc.rect(67, y + 20, 46, 46, "F");
-    doc.addImage(
-      qr.createDataURL(12, 4),
-      "PNG",
-      67,
-      y + 20,
-      46,
-      46,
-      undefined,
-      "NONE"
-    );
+    drawQrCode(doc, paymentData.payload, 67, y + 20, 46);
   } else {
     doc.rect(68, y + 21, 44, 44);
     doc.setFont("helvetica", "bold");
